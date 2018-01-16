@@ -1,4 +1,4 @@
-# 网关
+# 网关,聚合
 API网关 （spring-cloud-zuul）
 
 功能列表： <br>
@@ -12,7 +12,6 @@ API网关 （spring-cloud-zuul）
 <br>
 
 
-#聚合
 API聚合 （spring-boot-netty）
 
 功能列表：<br>
