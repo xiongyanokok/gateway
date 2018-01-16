@@ -42,13 +42,6 @@
     		<artifactId>spring-cloud-starter-zuul</artifactId>
 		</dependency>
 
-		<!-- starter -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		
 		<!-- ratelimit -->
 		<dependency>
 		    <groupId>com.marcosbarbero.cloud</groupId>

@@ -2,7 +2,6 @@ package com.hexun.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ImportResource;
 
@@ -12,7 +11,6 @@ import org.springframework.context.annotation.ImportResource;
  * @author xiongyan
  * @date 2017年12月17日 上午11:01:57
  */
-@ServletComponentScan
 @SpringBootApplication
 @ComponentScan("com.hexun")
 @ImportResource("classpath:/spring/applicationContext-*.xml")

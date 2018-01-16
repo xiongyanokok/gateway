@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 
 import com.hexun.cache.IRedisClient;
-import com.hexun.common.security.Md5Utils;
 import com.hexun.gateway.common.Constant;
 import com.hexun.gateway.common.GatewayUtils;
 import com.netflix.zuul.ZuulFilter;
@@ -37,7 +36,7 @@ public class CacheFilter extends ZuulFilter {
 	public Object run() {
 		String uri = RequestContext.getCurrentContext().getRequest().getRequestURI();
 		// 生成唯一key
-		String key = String.format(Constant.CACHEKEY, GatewayUtils.getProjectName(), Md5Utils.md5(uri));
+		String key = String.format(Constant.CACHEKEY, GatewayUtils.getProjectName(), uri.replace(":", ""));
 		RBucket<String> rBucket = redisClient.getBucket(key);
 		if (rBucket.isExists()) {
 			GatewayUtils.responseBody(rBucket.get());

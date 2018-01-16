@@ -9,7 +9,6 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StreamUtils;
 
 import com.hexun.cache.IRedisClient;
-import com.hexun.common.security.Md5Utils;
 import com.hexun.gateway.common.Constant;
 import com.hexun.gateway.common.GatewayUtils;
 import com.hexun.gateway.pojo.CacheInfo;
@@ -60,7 +59,7 @@ public class SuccessFilter extends ZuulFilter {
 			// 缓存信息
 			CacheInfo cacheInfo = GatewayUtils.getGatewayInfo().getCacheInfo();
 			// 生成唯一key
-			String key = String.format(Constant.CACHEKEY, GatewayUtils.getProjectName(), Md5Utils.md5(ctx.getRequest().getRequestURI()));
+			String key = String.format(Constant.CACHEKEY, GatewayUtils.getProjectName(), ctx.getRequest().getRequestURI().replace(":", ""));
 			RBucket<String> rBucket = redisClient.getBucket(key);
 			rBucket.set(body, cacheInfo.getTime(), cacheInfo.getTimeUnit());
 		} catch (Exception e) {

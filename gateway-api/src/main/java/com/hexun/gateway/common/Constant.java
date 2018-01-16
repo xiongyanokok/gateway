@@ -35,11 +35,11 @@ public final class Constant {
 	/**
 	 * 分布式缓存key
 	 */
-	public static final String CACHEKEY = "zuul:%s:cache:%s";
+	public static final String CACHEKEY = "gateway:%s:cache:%s";
 	
 	/**
 	 * 分布式锁key
 	 */
-	public static final String LOCKKEY = "zuul:%s:lock:%s";
+	public static final String LOCKKEY = "gateway:%s:lock:%s";
 	
 }

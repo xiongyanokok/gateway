@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.hexun.cache.IRedisClient;
 import com.hexun.common.utils.JsonUtils;
+import com.hexun.gateway.common.Constant;
 import com.hexun.gateway.pojo.AggregationResource;
 
 /**
@@ -144,7 +145,7 @@ public abstract class AbstractAggregatorRequest implements AggregatorRequest {
 	 * @return
 	 */
 	private String redisKey(AggregationResource resource) {
-		return String.format("cdsq:polymeric:%s:%s:%s", resource.getName(), resource.getResourceName(), resource.getResourceUrl().replace(":", ""));
+		return String.format(Constant.CACHEKEY, resource.getName(), resource.getResourceName(), resource.getResourceUrl().replace(":", ""));
 	}
 
 	/**
