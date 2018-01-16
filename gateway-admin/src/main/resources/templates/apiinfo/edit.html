@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="stylesheet" type="text/css" th:href="@{/static/h-ui/css/H-ui.min.css}" />
+<link rel="stylesheet" type="text/css" th:href="@{/static/h-ui.admin/css/H-ui.admin.css}" />
+<link rel="stylesheet" type="text/css" th:href="@{/lib/Hui-iconfont/1.0.8/iconfont.css}" />
+<link rel="stylesheet" type="text/css" th:href="@{/static/h-ui.admin/skin/default/skin.css}" id="skin" />
+<link rel="stylesheet" type="text/css" th:href="@{/static/h-ui.admin/css/style.css}" />
+<title>修改网关</title>
+</head>
+<body>
+	<article class="page-container">
+		<form id="form" action="/admin/apiinfo/update" method="post" class="form form-horizontal">
+			<input type="hidden" id="id" name="id" th:value="${apiInfo.id}" />
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span> 所属项目：</label>
+				<div class="formControls col-xs-8 col-sm-8">
+					<span class="select-box inline" style="width: 100%;">
+						<select id="projectId" name="projectId" class="select" style="width: 100%;">
+							<option value="">全部产品</option>
+							<option th:each="project : ${apiProjects}" th:value="${project.id }" th:text="${project.projectCn }" th:selected="${apiInfo.projectId == project.id}"></option>
+						</select>
+					</span>
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span> 接口地址：</label>
+				<div class="formControls col-xs-8 col-sm-8">
+					<input type="text" class="input-text" id="uri" name="uri" placeholder="接口地址" th:value="${apiInfo.uri}" />
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3">是否启用：</label>
+				<div class="formControls col-xs-8 col-sm-8">
+					<span class="select-box inline" style="width: 100%;">
+						<select id="enabled" name="enabled" class="select" style="width: 100%;">
+							<option value="1" th:selected="${apiInfo.enabled == true}">是</option>
+							<option value="0" th:selected="${apiInfo.enabled == false}">否</option>
+						</select>
+					</span>
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3">方法：</label>
+				<div class="formControls col-xs-8 col-sm-8">
+					<span class="select-box inline" style="width: 100%;">
+						<select id="method" name="method" class="select" style="width: 100%;">
+							<option value="1" th:selected="${apiInfo.method == 1}">GET</option>
+							<option value="2" th:selected="${apiInfo.method == 2}">POST</option>
+							<option value="3" th:selected="${apiInfo.method == 3}">GET/POST</option>
+						</select>
+					</span>
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3">是否登录：</label>
+				<div class="formControls col-xs-8 col-sm-8">
+					<span class="select-box inline" style="width: 100%;">
+						<select id="login" name="login" class="select" style="width: 100%;">
+							<option value="1" th:selected="${apiInfo.login == true}">是</option>
+							<option value="0" th:selected="${apiInfo.login == false}">否</option>
+						</select>
+					</span>
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3">是否鉴权：</label>
+				<div class="formControls col-xs-8 col-sm-8">
+					<span class="select-box inline" style="width: 100%;">
+						<select id="sign" name="sign" class="select" style="width: 100%;">
+							<option value="1" th:selected="${apiInfo.sign == true}">是</option>
+							<option value="0" th:selected="${apiInfo.sign == false}">否</option>
+						</select>
+					</span>
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3">是否缓存：</label>
+				<div class="formControls col-xs-8 col-sm-8">
+					<span class="select-box inline" style="width: 100%;">
+						<select id="globalCache" name="globalCache" class="select" style="width: 100%;">
+							<option value="1" th:selected="${apiInfo.globalCache == true}">是</option>
+							<option value="0" th:selected="${apiInfo.globalCache == false}">否</option>
+						</select>
+					</span>
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3">是否加锁：</label>
+				<div class="formControls col-xs-8 col-sm-8">
+					<span class="select-box inline" style="width: 100%;">
+						<select id="globalLock" name="globalLock" class="select" style="width: 100%;">
+							<option value="1" th:selected="${apiInfo.globalLock == true}">是</option>
+							<option value="0" th:selected="${apiInfo.globalLock == false}">否</option>
+						</select>
+					</span>
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3">是否限流：</label>
+				<div class="formControls col-xs-8 col-sm-8">
+					<span class="select-box inline" style="width: 100%;">
+						<select id="rateLimit" name="rateLimit" class="select" style="width: 100%;">
+							<option value="1" th:selected="${apiInfo.rateLimit == true}">是</option>
+							<option value="0" th:selected="${apiInfo.rateLimit == false}">否</option>
+						</select>
+					</span>
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3">是否监控：</label>
+				<div class="formControls col-xs-8 col-sm-8">
+					<span class="select-box inline" style="width: 100%;">
+						<select id="monitor" name="monitor" class="select" style="width: 100%;">
+							<option value="1" th:selected="${apiInfo.monitor == true}">是</option>
+							<option value="0" th:selected="${apiInfo.monitor == false}">否</option>
+						</select>
+					</span>
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3">是否记录日志：</label>
+				<div class="formControls col-xs-8 col-sm-8">
+					<span class="select-box inline" style="width: 100%;">
+						<select id="log" name="log" class="select" style="width: 100%;">
+							<option value="1" th:selected="${apiInfo.log == true}">是</option>
+							<option value="0" th:selected="${apiInfo.log == false}">否</option>
+						</select>
+					</span>
+				</div>
+			</div>
+			
+			<div class="row cl">
+				<div class="col-xs-8 col-sm-8 col-xs-offset-4 col-sm-offset-3">
+					<button class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 保存 </button>
+					<button class="btn btn-default radius" type="reset"><i class="Hui-iconfont">&#xe66b;</i> 重置 </button>
+				</div>
+			</div>
+		</form>
+	</article>
+</body>
+</html>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" th:src="@{/lib/jquery/1.9.1/jquery.min.js}"></script> 
+<script type="text/javascript" th:src="@{/lib/layer/2.4/layer.js}"></script>
+<script type="text/javascript" th:src="@{/static/h-ui/js/H-ui.min.js}"></script> 
+<script type="text/javascript" th:src="@{/static/h-ui.admin/js/H-ui.admin.js}"></script>
+<script type="text/javascript" th:src="@{/js/common.js}"></script> 
+<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本--> 
+<script type="text/javascript" th:src="@{/lib/jquery.validation/1.14.0/jquery.validate.js}"></script> 
+<script type="text/javascript" th:src="@{/lib/jquery.validation/1.14.0/validate-methods.js}"></script> 
+<script type="text/javascript" th:src="@{/lib/jquery.validation/1.14.0/messages_zh.js}"></script>
+<script th:inline="javascript">
+	$(function(){
+		$("#form").validate({
+			rules:{
+				projectId:{
+					required:true
+				},
+				uri:{
+					required:true
+				}
+			},
+			onkeyup:false,
+			focusCleanup:true,
+			success:"valid",
+			submitHandler:function(form){
+				$(form).ajaxSubmit(function(result) {
+					if (result.code == "Y") {
+						parent.dataTable.fnDraw();
+						parent.layer.msg("修改成功", {icon:6, time:1000});
+						var index = parent.layer.getFrameIndex(window.name);
+						parent.layer.close(index);
+					} else {
+						layer.alert(result.message);
+					}
+				});
+			}
+		});
+	});
+</script>

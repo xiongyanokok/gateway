@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hexun.gateway.mapper.ApiInfoMapper">
+	
+  	<resultMap id="BaseResultMap" type="com.hexun.gateway.model.ApiInfo">
+		<id column="id" property="id" />	
+	    <result column="project_id" property="projectId" />
+	    <result column="uri" property="uri" />
+	    <result column="enabled" property="enabled" />
+	    <result column="method" property="method" />
+	    <result column="login" property="login" />
+	    <result column="sign" property="sign" />
+	    <result column="global_cache" property="globalCache" />
+	    <result column="global_lock" property="globalLock" />
+	    <result column="rate_limit" property="rateLimit" />
+	    <result column="monitor" property="monitor" />
+	    <result column="log" property="log" />
+	    <result column="is_delete" property="isDelete" />
+	    <result column="create_user_id" property="createUserId" />
+	    <result column="create_time" property="createTime" />
+	    <result column="update_user_id" property="updateUserId" />
+	    <result column="update_time" property="updateTime" />
+  	</resultMap>
+  	
+  	<!-- 表所有字段 -->
+  	<sql id="Base_Column_List">
+  		id, project_id, uri, enabled, method, login, sign, global_cache, global_lock, rate_limit, monitor, log, is_delete, create_user_id, create_time, update_user_id, update_time
+  	</sql>
+  	
+  	<!-- 根据主键查询 -->
+  	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    	select 
+    	<include refid="Base_Column_List" />
+    	from gateway_api_info
+		where id = #{id}
+  	</select>
+  	
+  	<!-- 新增数据库记录 -->
+  	<insert id="insert" parameterType="com.hexun.gateway.model.ApiInfo">
+    	<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	    insert into gateway_api_info
+    		<trim prefix="(" suffix=")" suffixOverrides=",">
+		      	<if test="id != null">
+		        	id,
+		      	</if>
+		      	<if test="projectId != null">
+		        	project_id,
+		      	</if>
+		      	<if test="uri != null">
+		        	uri,
+		      	</if>
+		      	<if test="enabled != null">
+		        	enabled,
+		      	</if>
+		      	<if test="method != null">
+		        	method,
+		      	</if>
+		      	<if test="login != null">
+		        	login,
+		      	</if>
+		      	<if test="sign != null">
+		        	sign,
+		      	</if>
+		      	<if test="globalCache != null">
+		        	global_cache,
+		      	</if>
+		      	<if test="globalLock != null">
+		        	global_lock,
+		      	</if>
+		      	<if test="rateLimit != null">
+		        	rate_limit,
+		      	</if>
+		      	<if test="monitor != null">
+		        	monitor,
+		      	</if>
+		      	<if test="log != null">
+		        	log,
+		      	</if>
+		      	<if test="isDelete != null">
+		        	is_delete,
+		      	</if>
+		      	<if test="createUserId != null">
+		        	create_user_id,
+		      	</if>
+		      	<if test="createTime != null">
+		        	create_time,
+		      	</if>
+		      	<if test="updateUserId != null">
+		        	update_user_id,
+		      	</if>
+		      	<if test="updateTime != null">
+		        	update_time,
+		      	</if>
+    		</trim>
+    	values
+    		<trim prefix="(" suffix=")" suffixOverrides=",">
+      			<if test="id != null">
+        			#{id},
+      			</if>
+      			<if test="projectId != null">
+        			#{projectId},
+      			</if>
+      			<if test="uri != null">
+        			#{uri},
+      			</if>
+      			<if test="enabled != null">
+        			#{enabled},
+      			</if>
+      			<if test="method != null">
+        			#{method},
+      			</if>
+      			<if test="login != null">
+        			#{login},
+      			</if>
+      			<if test="sign != null">
+        			#{sign},
+      			</if>
+      			<if test="globalCache != null">
+        			#{globalCache},
+      			</if>
+      			<if test="globalLock != null">
+        			#{globalLock},
+      			</if>
+      			<if test="rateLimit != null">
+        			#{rateLimit},
+      			</if>
+      			<if test="monitor != null">
+        			#{monitor},
+      			</if>
+      			<if test="log != null">
+        			#{log},
+      			</if>
+      			<if test="isDelete != null">
+        			#{isDelete},
+      			</if>
+      			<if test="createUserId != null">
+        			#{createUserId},
+      			</if>
+      			<if test="createTime != null">
+        			#{createTime},
+      			</if>
+      			<if test="updateUserId != null">
+        			#{updateUserId},
+      			</if>
+      			<if test="updateTime != null">
+        			#{updateTime},
+      			</if>
+    		</trim>
+  	</insert>
+  	
+  	<!-- 更新数据库记录 -->
+  	<update id="update" parameterType="com.hexun.gateway.model.ApiInfo">
+    	update gateway_api_info
+    	<set>
+			<if test="projectId != null">
+    			project_id = #{projectId},
+  			</if>
+			<if test="uri != null">
+    			uri = #{uri},
+  			</if>
+			<if test="enabled != null">
+    			enabled = #{enabled},
+  			</if>
+			<if test="method != null">
+    			method = #{method},
+  			</if>
+			<if test="login != null">
+    			login = #{login},
+  			</if>
+			<if test="sign != null">
+    			sign = #{sign},
+  			</if>
+			<if test="globalCache != null">
+    			global_cache = #{globalCache},
+  			</if>
+			<if test="globalLock != null">
+    			global_lock = #{globalLock},
+  			</if>
+			<if test="rateLimit != null">
+    			rate_limit = #{rateLimit},
+  			</if>
+			<if test="monitor != null">
+    			monitor = #{monitor},
+  			</if>
+			<if test="log != null">
+    			log = #{log},
+  			</if>
+			<if test="isDelete != null">
+    			is_delete = #{isDelete},
+  			</if>
+			<if test="updateUserId != null">
+    			update_user_id = #{updateUserId},
+  			</if>
+    	</set>
+    	<where>
+    		id = #{id}
+    	</where>
+  	</update>
+  	
+	<!-- 根据map查询 -->
+  	<select id="getApiInfo" resultMap="BaseResultMap" parameterType="java.util.Map">
+  		select
+        <include refid="Base_Column_List"/>
+        from gateway_api_info
+        <where>
+  			<if test="id != null">
+    			and id = #{id}
+  			</if>
+  			<if test="projectId != null">
+    			and project_id = #{projectId}
+  			</if>
+  			<if test="uri != null">
+    			and uri = #{uri}
+  			</if>
+  			<if test="enabled != null">
+    			and enabled = #{enabled}
+  			</if>
+  			<if test="method != null">
+    			and method = #{method}
+  			</if>
+  			<if test="login != null">
+    			and login = #{login}
+  			</if>
+  			<if test="sign != null">
+    			and sign = #{sign}
+  			</if>
+  			<if test="globalCache != null">
+    			and global_cache = #{globalCache}
+  			</if>
+  			<if test="globalLock != null">
+    			and global_lock = #{globalLock}
+  			</if>
+  			<if test="rateLimit != null">
+    			and rate_limit = #{rateLimit}
+  			</if>
+  			<if test="monitor != null">
+    			and monitor = #{monitor}
+  			</if>
+  			<if test="log != null">
+    			and log = #{log}
+  			</if>
+  			<if test="isDelete != null">
+    			and is_delete = #{isDelete}
+  			</if>
+  			<if test="createUserId != null">
+    			and create_user_id = #{createUserId}
+  			</if>
+  			<if test="createTime != null">
+    			and create_time = #{createTime}
+  			</if>
+  			<if test="updateUserId != null">
+    			and update_user_id = #{updateUserId}
+  			</if>
+  			<if test="updateTime != null">
+    			and update_time = #{updateTime}
+  			</if>
+        </where>
+  	</select>
+  
+  	<!-- 根据map查询 -->
+  	<select id="listApiInfo" resultMap="BaseResultMap" parameterType="java.util.Map">
+  		select
+        <include refid="Base_Column_List"/>
+        from gateway_api_info
+        <where>
+  			<if test="projectId != null">
+    			and project_id = #{projectId}
+  			</if>
+  			<if test="uri != null">
+    			and uri = #{uri}
+  			</if>
+  			<if test="enabled != null">
+    			and enabled = #{enabled}
+  			</if>
+  			<if test="method != null">
+    			and method = #{method}
+  			</if>
+  			<if test="login != null">
+    			and login = #{login}
+  			</if>
+  			<if test="sign != null">
+    			and sign = #{sign}
+  			</if>
+  			<if test="globalCache != null">
+    			and global_cache = #{globalCache}
+  			</if>
+  			<if test="globalLock != null">
+    			and global_lock = #{globalLock}
+  			</if>
+  			<if test="rateLimit != null">
+    			and rate_limit = #{rateLimit}
+  			</if>
+  			<if test="monitor != null">
+    			and monitor = #{monitor}
+  			</if>
+  			<if test="log != null">
+    			and log = #{log}
+  			</if>
+  			<if test="isDelete != null">
+    			and is_delete = #{isDelete}
+  			</if>
+  			<if test="createUserId != null">
+    			and create_user_id = #{createUserId}
+  			</if>
+  			<if test="createTime != null">
+    			and create_time = #{createTime}
+  			</if>
+  			<if test="updateUserId != null">
+    			and update_user_id = #{updateUserId}
+  			</if>
+  			<if test="updateTime != null">
+    			and update_time = #{updateTime}
+  			</if>
+        </where>
+        <if test="groupBy != null">
+        	group by ${groupBy}
+        </if>
+        <if test="orderBy != null">
+        	order by ${orderBy}
+        </if>
+  	</select>
+  	
+  	<!-- 批量保存 -->
+	<insert id="batchInsert" parameterType="java.util.List">
+		insert into gateway_api_info (<include refid="Base_Column_List" />)
+		values 
+		<foreach collection="list" index="index" item="item" separator=",">
+			<trim prefix="(" suffix=")" suffixOverrides=",">
+				#{item.id},
+				#{item.projectId},
+				#{item.uri},
+				#{item.enabled},
+				#{item.method},
+				#{item.login},
+				#{item.sign},
+				#{item.globalCache},
+				#{item.globalLock},
+				#{item.rateLimit},
+				#{item.monitor},
+				#{item.log},
+				#{item.isDelete},
+				#{item.createUserId},
+				#{item.createTime},
+				#{item.updateUserId},
+				#{item.updateTime},
+			</trim>
+		</foreach>
+	</insert>
+	
+	<!-- 批量更新 -->
+  	<update id="batchUpdate" parameterType="java.util.List">
+		<foreach collection="list" index="index" item="item" separator=";">
+			update gateway_api_info
+			<set>
+        		<if test="item.projectId != null">
+        			project_id = #{item.projectId},
+        		</if>
+        		<if test="item.uri != null">
+        			uri = #{item.uri},
+        		</if>
+        		<if test="item.enabled != null">
+        			enabled = #{item.enabled},
+        		</if>
+        		<if test="item.method != null">
+        			method = #{item.method},
+        		</if>
+        		<if test="item.login != null">
+        			login = #{item.login},
+        		</if>
+        		<if test="item.sign != null">
+        			sign = #{item.sign},
+        		</if>
+        		<if test="item.globalCache != null">
+        			global_cache = #{item.globalCache},
+        		</if>
+        		<if test="item.globalLock != null">
+        			global_lock = #{item.globalLock},
+        		</if>
+        		<if test="item.rateLimit != null">
+        			rate_limit = #{item.rateLimit},
+        		</if>
+        		<if test="item.monitor != null">
+        			monitor = #{item.monitor},
+        		</if>
+        		<if test="item.log != null">
+        			log = #{item.log},
+        		</if>
+        		<if test="item.isDelete != null">
+        			is_delete = #{item.isDelete},
+        		</if>
+        		<if test="item.updateUserId != null">
+        			update_user_id = #{item.updateUserId},
+        		</if>
+			</set>
+            where id = #{item.id}
+		</foreach>
+	</update>
+	
+</mapper>

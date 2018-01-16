@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: zuul
+  http:
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
+      
+server:
+  port: 8000
+  tomcat:
+    uri-encoding: UTF-8
+    accept-count: 1000
+    max-threads: 1000
+
+logging:
+  config: classpath:logback.xml
+  
+zookeeper:
+  servers: 10.0.202.63:2181,10.0.202.63:2182
+  namespace: gateway/api
+
+zuul:     
+  host:
+    max-per-route-connections: 1000
+    max-total-connections: 10000
+    connect-timeout-millis: 2000
+    socket-timeout-millis: 5000
+
+  #路由  
+  routes:
+    cdsq:
+      path: /cdsq/**
+      stripPrefix: true
+      url: http://test.apicaidao.hexun.com/
+       
+    lesson:
+      path: /lesson/**
+      stripPrefix: true
+      url: http://test.apilesson.hexun.com/
+     
+  #限流
+  ratelimit:
+    enabled: true
+    repository: REDIS
+    behind-proxy: true
+    default-policy:
+      limit: 10
+      refresh-interval: 60
+      type: 
+        - user
+        - origin
+        - url
+        
+    policies:
+      lesson:
+        limit: 3
+        refresh-interval: 60
+        type: 
+          - user
+          - origin
+          - url
