@@ -1,4 +1,4 @@
-# 网关,聚合
+# 网关，聚合
 API网关 （spring-cloud-zuul）
 
 功能列表： <br>
