@@ -15,7 +15,6 @@ API网关 （spring-cloud-zuul）
 API聚合 （spring-boot-netty）
 
 客户端支持：netty、httpClient<br>
-<br>
 功能列表：<br>
 1，并行聚合<br>
 2，串行聚合<br>
