@@ -1,7 +1,8 @@
 package com.hexun.gateway.listener;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.curator.framework.recipes.cache.TreeCache;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +15,7 @@ import com.hexun.gateway.zookeeper.RegistryCenter;
  * @date 2018年1月9日 下午3:00:21
  */
 @Component
-public class SpringApplicationListener implements InitializingBean {
+public class SpringApplicationListener {
 
 	@Autowired
 	private RegistryCenter registryCenter; 
@@ -22,8 +23,8 @@ public class SpringApplicationListener implements InitializingBean {
 	/**
 	 * 初始化网关配置信息
 	 */
-	@Override
-	public void afterPropertiesSet() throws Exception {
+	@PostConstruct
+	public void init() {
 		ZookeeperEventListener listener = new ZookeeperEventListener();
 		// 获取网关配置信息
 		listener.reloadGatewayInfo();
@@ -35,4 +36,5 @@ public class SpringApplicationListener implements InitializingBean {
 		TreeCache cache = registryCenter.getCache(basePath);
         cache.getListenable().addListener(listener);
 	}
+	
 }
