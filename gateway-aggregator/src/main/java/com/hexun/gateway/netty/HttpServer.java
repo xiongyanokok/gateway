@@ -17,29 +17,30 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
-import io.netty.handler.logging.LogLevel;
-import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
+import io.netty.util.concurrent.DefaultThreadFactory;
 
 @Component
 public class HttpServer implements InitializingBean, DisposableBean {
-	
-	@Value("${server.port}")
-    private int port;
-	
+
 	@Autowired
 	private HttpServerInboundHandler httpServerInboundHandler;
-	
+
 	/**
 	 * 主线程池
 	 */
 	private EventLoopGroup bossGroup;
-	
+
 	/**
 	 * 工作线程池
 	 */
 	private EventLoopGroup workerGroup;
 
+	/**
+	 * 端口号
+	 */
+	@Value("${server.port}")
+	private int port;
 
 	@Override
 	public void destroy() throws Exception {
@@ -55,14 +56,15 @@ public class HttpServer implements InitializingBean, DisposableBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		bossGroup = new NioEventLoopGroup();
-		workerGroup = new NioEventLoopGroup();
+		bossGroup = new NioEventLoopGroup(0, new DefaultThreadFactory("NettyServerBoss", true));
+		workerGroup = new NioEventLoopGroup(0, new DefaultThreadFactory("NettyServerWorker", true));
 		ServerBootstrap b = new ServerBootstrap();
 		b.group(bossGroup, workerGroup);
 		b.channel(NioServerSocketChannel.class);
 		b.option(ChannelOption.SO_BACKLOG, 1024);
 		b.option(ChannelOption.SO_KEEPALIVE, true);
-		b.handler(new LoggingHandler(LogLevel.INFO));
+		b.option(ChannelOption.TCP_NODELAY, Boolean.TRUE);
+		b.option(ChannelOption.SO_REUSEADDR, Boolean.TRUE);
 		b.childHandler(new ChannelInitializer<SocketChannel>() {
 			@Override
 			public void initChannel(SocketChannel ch) throws Exception {

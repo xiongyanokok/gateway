@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.hexun.common.http.RequestPackage;
 import com.hexun.common.http.ResponsePackage;
+import com.hexun.gateway.common.Constant;
 import com.hexun.gateway.common.ThreadPoolContext;
 import com.hexun.gateway.pojo.AggregationResource;
 
@@ -24,13 +25,13 @@ import com.hexun.gateway.pojo.AggregationResource;
  * @date 2018年1月15日 下午1:56:50
  */
 @Component("httpClientAggregatorRequest")
-public class HttpClientAggregatorRequest extends AbstractAggregatorRequest {
+public class HttpClientAggregatorRequest extends AbstractAggregatorRequest<Future<String>> {
 	
 	/**
 	 * logger
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(HttpClientAggregatorRequest.class);
-
+	
 	/**
 	 * 并行
 	 * 
@@ -39,18 +40,22 @@ public class HttpClientAggregatorRequest extends AbstractAggregatorRequest {
 	 */
 	@Override
 	public String parallel(List<AggregationResource> resources) {
+		Map<String, String> resultMap = new HashMap<>();
 		Map<AggregationResource, Future<String>> futureMap = new HashMap<>();
 		for (AggregationResource resource : resources) {
-			// 异步执行
-			futureMap.put(resource, worker(resource));
+			String value = getCacheResult(resource);
+			if (StringUtils.isNotEmpty(value)) {
+				resultMap.put(resource.getResourceName(), value);
+			} else {
+				futureMap.put(resource, execute(resource));
+			}
 		}
 
-		Map<String, String> resultMap = new HashMap<>();
 		for (Map.Entry<AggregationResource, Future<String>> entry : futureMap.entrySet()) {
 			AggregationResource resource = entry.getKey();
 			Future<String> future = entry.getValue();
-			// 获取异步执行的结果
-			String value = getAsyncResult(resource, future);
+			// 获取执行结果
+			String value = futureResult(resource, future);
 			if (StringUtils.isEmpty(value)) {
 				value = resource.getDefaultValue();
 			}
@@ -69,31 +74,6 @@ public class HttpClientAggregatorRequest extends AbstractAggregatorRequest {
 	}
 	
 	/**
-	 * 异步执行
-	 * 
-	 * @param resourceInfo
-	 * @return
-	 */
-	private Future<String> worker(AggregationResource resource) {
-    	return ThreadPoolContext.submit(() -> execute(resource));
-    }
-	
-	/**
-     * Future get
-     * 
-     * @param entry
-     * @return
-     */
-    private String getAsyncResult(AggregationResource resource, Future<String> future) {
-        try {
-            return future.get(resource.getTimeOut(), TimeUnit.SECONDS);
-        } catch (Exception e) {
-            logger.error("并行异步执行URL【{}】失败：", resource.getResourceUrl(), e);
-            return null;
-        }
-    }
-    
-	/**
 	 * 串行
 	 * 
 	 * @param resources
@@ -110,21 +90,24 @@ public class HttpClientAggregatorRequest extends AbstractAggregatorRequest {
 	 * @param resource
 	 * @return
 	 */
-	public String get(AggregationResource resource) {
-		RequestPackage requestPackage = RequestPackage.get(resource.getResourceUrl());
-        if (resource.getIsLogin()) {
-        	// 设置cookie
-            Map<String, String> cookieMap = new HashMap<>();
-            cookieMap.put("Cookie", resource.getCookie());
-            requestPackage.setHeaders(cookieMap);
-        }
-
-        // 执行http请求
-        ResponsePackage response = requestPackage.setCharset("UTF-8").getResponse();
-        if (null == response || !response.isSuccess()) {
-            return null;
-        }
-       	return response.getContent();
+	@Override
+	public Future<String> get(AggregationResource resource) {
+		return ThreadPoolContext.submit(() -> {
+			RequestPackage requestPackage = RequestPackage.get(resource.getResourceUrl());
+	        if (resource.getIsLogin()) {
+	        	// 设置cookie
+	            Map<String, String> cookieMap = new HashMap<>();
+	            cookieMap.put("Cookie", resource.getCookie());
+	            requestPackage.setHeaders(cookieMap);
+	        }
+	
+	        // 执行http请求
+	        ResponsePackage response = requestPackage.setCharset(Constant.CHARSETNAME).getResponse();
+	        if (null == response || !response.isSuccess()) {
+	            return null;
+	        }
+	       	return response.getContent();
+		});
 	}
 	
 	/**
@@ -133,26 +116,46 @@ public class HttpClientAggregatorRequest extends AbstractAggregatorRequest {
 	 * @param resource
 	 * @return
 	 */
-	public String post(AggregationResource resource) {
-		RequestPackage requestPackage = RequestPackage.post(resource.getResourceUrl());
-        if (resource.getIsLogin()) {
-        	// 设置cookie
-            Map<String, String> cookieMap = new HashMap<>();
-            cookieMap.put("Cookie", resource.getCookie());
-            requestPackage.setHeaders(cookieMap);
-        }
-        Map<String, String> paramMap = resource.getParamMap();
-        if (MapUtils.isNotEmpty(paramMap)) {
-        	// 设置参数
-        	requestPackage.setNameValuePairs(paramMap);
-        }
-        
-        // 执行http请求
-        ResponsePackage response = requestPackage.setCharset("UTF-8").getResponse();
-        if (null == response || !response.isSuccess()) {
+	@Override
+	public Future<String> post(AggregationResource resource) {
+		return ThreadPoolContext.submit(() -> {
+			RequestPackage requestPackage = RequestPackage.post(resource.getResourceUrl());
+			if (resource.getIsLogin()) {
+				// 设置cookie
+				Map<String, String> cookieMap = new HashMap<>();
+				cookieMap.put("Cookie", resource.getCookie());
+				requestPackage.setHeaders(cookieMap);
+			}
+			Map<String, String> paramMap = resource.getParamMap();
+			if (MapUtils.isNotEmpty(paramMap)) {
+				// 设置参数
+				requestPackage.setNameValuePairs(paramMap);
+			}
+			
+			// 执行http请求
+			ResponsePackage response = requestPackage.setCharset(Constant.CHARSETNAME).getResponse();
+			if (null == response || !response.isSuccess()) {
+				return null;
+			}
+			return response.getContent();
+		});
+	}
+	
+	/**
+	 * 获取结果
+	 * 
+	 * @param resource
+	 * @param future
+	 * @return
+	 */
+	@Override
+	public String result(AggregationResource resource, Future<String> future) {
+		try {
+            return future.get(resource.getTimeOut(), TimeUnit.SECONDS);
+        } catch (Exception e) {
+            logger.error("异步执行URL【{}】失败：", resource.getResourceUrl(), e);
             return null;
         }
-       	return response.getContent();
 	}
 	
 }

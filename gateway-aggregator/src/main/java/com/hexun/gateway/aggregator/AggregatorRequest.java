@@ -10,7 +10,7 @@ import com.hexun.gateway.pojo.AggregationResource;
  * @author xiongyan
  * @date 2018年1月15日 下午1:55:24
  */
-public interface AggregatorRequest {
+public interface AggregatorRequest<T> {
 
 	/**
 	 * 并行
@@ -34,7 +34,7 @@ public interface AggregatorRequest {
 	 * @param resource
 	 * @return
 	 */
-	String get(AggregationResource resource);
+	T get(AggregationResource resource);
 	
 	/**
 	 * 执行post请求
@@ -42,6 +42,15 @@ public interface AggregatorRequest {
 	 * @param resource
 	 * @return
 	 */
-	String post(AggregationResource resource);
+	T post(AggregationResource resource);
+	
+	/**
+	 * 获取结果
+	 * 
+	 * @param resource
+	 * @param T
+	 * @return
+	 */
+	String result(AggregationResource resource, T t);
 	
 }

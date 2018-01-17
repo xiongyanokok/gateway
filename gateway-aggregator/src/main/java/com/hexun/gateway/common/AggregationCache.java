@@ -37,7 +37,7 @@ public final class AggregationCache {
 		AggregationResource resource1 = new AggregationResource();
 		resource1.setName("user-center");
 		resource1.setResourceName("action");
-		resource1.setResourceUrl("http://testaction.intcoop.hexun.com/msg/getNoReadActionNum.do");
+		resource1.setResourceUrl("http://caidaoaction.intcoop.hexun.com/msg/getNoReadActionNum.do");
 		resource1.setResourceMethod("GET");
 		resource1.setIsLogin(true);
 		resource1.setTimeOut(5);

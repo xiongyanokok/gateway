@@ -1,7 +1,6 @@
 package com.hexun.gateway.aggregator;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -14,12 +13,11 @@ import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
 import org.beetl.core.resource.StringTemplateResourceLoader;
 import org.redisson.api.RBucket;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.hexun.cache.IRedisClient;
 import com.hexun.common.utils.JsonUtils;
+import com.hexun.gateway.common.AggregationUtils;
 import com.hexun.gateway.common.Constant;
 import com.hexun.gateway.pojo.AggregationResource;
 
@@ -29,13 +27,8 @@ import com.hexun.gateway.pojo.AggregationResource;
  * @author xiongyan
  * @date 2018年1月15日 下午1:55:24
  */
-public abstract class AbstractAggregatorRequest implements AggregatorRequest {
+public abstract class AbstractAggregatorRequest<T> implements AggregatorRequest<T> {
 
-	/**
-	 * logger
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(AbstractAggregatorRequest.class);
-	
 	/**
 	 * IRedisClient
 	 */
@@ -47,11 +40,6 @@ public abstract class AbstractAggregatorRequest implements AggregatorRequest {
      */
     private GroupTemplate groupTemplate;
 
-	/**
-	 * 模板缓存
-	 */
-	private Map<Integer, Template> templateMap = new ConcurrentHashMap<>();
-	
     /**
      * 初始化GroupTemplate
      * 
@@ -63,36 +51,54 @@ public abstract class AbstractAggregatorRequest implements AggregatorRequest {
         Configuration cfg = Configuration.defaultConfiguration();
         groupTemplate = new GroupTemplate(resourceLoader, cfg);
     }
-
+	
 	/**
+	 * 从缓存中获取信息
+	 *
+	 * @param resource
+	 * @return
+	 */
+	public String getCacheResult(AggregationResource resource) {
+		if (!resource.getIsCache()) {
+			return null;
+		}
+		// 缓存key
+		String key = redisKey(resource);
+		RBucket<String> rBucket = redisClient.getBucket(key);
+		return rBucket.get();
+	}
+	
+	/**
+	 * 执行http请求
 	 * 
 	 * @param resource
 	 * @return
 	 */
-	public String execute(AggregationResource resource) {
-		String url = resource.getResourceUrl();
-		if (StringUtils.isEmpty(url)) {
-			return null;
-		}
-
-		// 获取缓存
-		String content = getCache(resource);
-		if (StringUtils.isNotEmpty(content)) {
-			return content;
-		}
-
+	public T execute(AggregationResource resource) {
 		// 执行请求
 		if ("GET".equalsIgnoreCase(resource.getResourceMethod())) {
-			content = get(resource);
+			return get(resource);
 		} else {
+			String url = resource.getResourceUrl();
 			int index = url.indexOf('?');
 			if (index != -1) {
 				resource.setResourceUrl(url.substring(0, index));
-				Map<String, String> paramMap = postData(url.substring(index + 1));
-				resource.setParamMap(paramMap);
+				resource.setParamMap(AggregationUtils.getParamMap(url));
 			}
-			content = post(resource);
+			return post(resource);
 		}
+	}
+	
+	/**
+	 * 获取异步结果
+	 * 
+	 * @param resource
+	 * @param callback
+	 * @return
+	 */
+	public String futureResult(AggregationResource resource, T t) {
+		// 获取结果
+		String content = result(resource, t);
 		if (StringUtils.isEmpty(content)) {
 			return content;
 		}
@@ -105,7 +111,7 @@ public abstract class AbstractAggregatorRequest implements AggregatorRequest {
 		
 		return content;
 	}
-
+	
 	/**
 	 * 设置缓存
 	 *
@@ -123,22 +129,6 @@ public abstract class AbstractAggregatorRequest implements AggregatorRequest {
 	}
 
 	/**
-	 * 获取缓存
-	 *
-	 * @param resource
-	 * @return
-	 */
-	private String getCache(AggregationResource resource) {
-		if (!resource.getIsCache()) {
-			return null;
-		}
-		// 缓存key
-		String key = redisKey(resource);
-		RBucket<String> rBucket = redisClient.getBucket(key);
-		return rBucket.get();
-	}
-
-	/**
 	 * redis缓存key
 	 * 
 	 * @param resource
@@ -149,25 +139,9 @@ public abstract class AbstractAggregatorRequest implements AggregatorRequest {
 	}
 
 	/**
-	 * 参数转map
-	 *
-	 * @param param
-	 * @return
+	 * 模板缓存
 	 */
-	private Map<String, String> postData(String param) {
-		if (StringUtils.isEmpty(param)) {
-			return null;
-		}
-		Map<String, String> map = new HashMap<>();
-		String[] params = param.split("&");
-		for (String str : params) {
-			String[] strs = str.split("=");
-			if (null != strs && strs.length == 2) {
-				map.put(strs[0], strs[1]);
-			}
-		}
-		return map;
-	}
+	private Map<Integer, Template> templateMap = new ConcurrentHashMap<>();
 
 	/**
 	 * 根据模板获取数据

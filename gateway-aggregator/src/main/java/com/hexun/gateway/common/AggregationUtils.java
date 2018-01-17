@@ -58,8 +58,9 @@ public class AggregationUtils {
 		// 聚合资源集合
 		List<AggregationResource> resourceList = new ArrayList<>();
 		for (AggregationResource resource : resources) {
-			// 拷贝
+			// 克隆
 			AggregationResource resourceInfo = SerializationUtils.clone(resource);
+			resourceList.add(resourceInfo);
 			if (resourceInfo.getIsLogin()) {
 				String cookie = request.headers().get("Cookie");
 				if (StringUtils.isEmpty(cookie)) {
@@ -77,7 +78,6 @@ public class AggregationUtils {
 			if (StringUtils.isNotEmpty(url)) {
 				resourceInfo.setResourceUrl(url);
 			}
-			resourceList.add(resourceInfo);
 		}
 		return resourceList;
 	}
@@ -91,7 +91,7 @@ public class AggregationUtils {
 	public static String getUserId(String cookie) {
 		Map<String, String> map = new HashMap<>();
 		map.put("cookie", cookie);
-		ResponsePackage response = RequestPackage.get("http://reg.intcoop.hexun.com/wapreg/checklogin.aspx?format=json").setHeaders(map).getResponse();
+		ResponsePackage response = RequestPackage.get(Constant.LOGINURL).setHeaders(map).getResponse();
 		if (null == response || !response.isSuccess()) {
 			return null;
 		}
