@@ -75,17 +75,17 @@ public abstract class AbstractAggregatorRequest<T> implements AggregatorRequest<
 	@Override
 	public String parallel(List<AggregationResource> resources) {
 		Map<String, String> resultMap = new HashMap<>();
-		Map<AggregationResource, T> monoMap = new HashMap<>();
+		Map<AggregationResource, T> futureMap = new HashMap<>();
 		for (AggregationResource resource : resources) {
 			String value = getCacheResult(resource);
 			if (StringUtils.isNotEmpty(value)) {
 				resultMap.put(resource.getResourceName(), value);
 			} else {
-				monoMap.put(resource, execute(resource));
+				futureMap.put(resource, execute(resource));
 			}
 		}
 
-		for (Map.Entry<AggregationResource, T> entry : monoMap.entrySet()) {
+		for (Map.Entry<AggregationResource, T> entry : futureMap.entrySet()) {
 			AggregationResource resource = entry.getKey();
 			T t = entry.getValue();
 			// 获取执行结果
