@@ -1,10 +1,13 @@
 package com.hexun.gateway.netty;
 
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import com.hexun.gateway.common.ThreadPoolContext;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -21,7 +24,7 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.util.concurrent.DefaultThreadFactory;
 
 @Component
-public class HttpServer implements InitializingBean, DisposableBean {
+public class HttpServer {
 
 	@Autowired
 	private HttpServerInboundHandler httpServerInboundHandler;
@@ -42,29 +45,22 @@ public class HttpServer implements InitializingBean, DisposableBean {
 	@Value("${server.port}")
 	private int port;
 
-	@Override
-	public void destroy() throws Exception {
-		if (null != workerGroup) {
-			workerGroup.shutdownGracefully();
-			workerGroup = null;
-		}
-		if (null != bossGroup) {
-			bossGroup.shutdownGracefully();
-			bossGroup = null;
-		}
-	}
-
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		bossGroup = new NioEventLoopGroup(0, new DefaultThreadFactory("NettyServerBoss", true));
-		workerGroup = new NioEventLoopGroup(0, new DefaultThreadFactory("NettyServerWorker", true));
+	/**
+	 * 启动netty 服务器
+	 * 
+	 * @throws InterruptedException 
+	 */
+	@PostConstruct
+	public void init() throws InterruptedException {
+		bossGroup = new NioEventLoopGroup(0, new DefaultThreadFactory("NettyServerBoss", Boolean.TRUE));
+		workerGroup = new NioEventLoopGroup(0, new DefaultThreadFactory("NettyServerWorker", Boolean.TRUE));
 		ServerBootstrap b = new ServerBootstrap();
 		b.group(bossGroup, workerGroup);
 		b.channel(NioServerSocketChannel.class);
 		b.option(ChannelOption.SO_BACKLOG, 1024);
-		b.option(ChannelOption.SO_KEEPALIVE, true);
-		b.option(ChannelOption.TCP_NODELAY, Boolean.TRUE);
-		b.option(ChannelOption.SO_REUSEADDR, Boolean.TRUE);
+		b.childOption(ChannelOption.SO_KEEPALIVE, Boolean.TRUE);
+		b.childOption(ChannelOption.TCP_NODELAY, Boolean.TRUE);
+		b.childOption(ChannelOption.SO_REUSEADDR, Boolean.TRUE);
 		b.childHandler(new ChannelInitializer<SocketChannel>() {
 			@Override
 			public void initChannel(SocketChannel ch) throws Exception {
@@ -84,4 +80,20 @@ public class HttpServer implements InitializingBean, DisposableBean {
 		f.channel().closeFuture().sync();
 	}
 
+	/**
+	 * 关闭netty 服务
+	 */
+	@PreDestroy
+	public void destroy() {
+		if (null != workerGroup) {
+			workerGroup.shutdownGracefully();
+			workerGroup = null;
+		}
+		if (null != bossGroup) {
+			bossGroup.shutdownGracefully();
+			bossGroup = null;
+		}
+		ThreadPoolContext.shutdown();
+	}
+	
 }

@@ -25,6 +25,12 @@ import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.util.CharsetUtil;
 
+/**
+ * 聚合工具类
+ * 
+ * @author xiongyan
+ * @date 2018年1月17日 下午3:09:30
+ */
 public class AggregationUtils {
 
 	private AggregationUtils() {
@@ -110,7 +116,7 @@ public class AggregationUtils {
 	 * @param paramMap
 	 * @return
 	 */
-	private static String replace(String url, Map<String, String> paramMap) {
+	public static String replace(String url, Map<String, String> paramMap) {
 		if (null == paramMap || paramMap.isEmpty()) {
 			return url;
 		}

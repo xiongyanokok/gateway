@@ -48,7 +48,7 @@ public interface AggregatorRequest<T> {
 	 * 获取结果
 	 * 
 	 * @param resource
-	 * @param T
+	 * @param t
 	 * @return
 	 */
 	String result(AggregationResource resource, T t);

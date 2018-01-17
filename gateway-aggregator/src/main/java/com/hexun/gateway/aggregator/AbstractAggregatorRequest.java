@@ -1,12 +1,17 @@
 package com.hexun.gateway.aggregator;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
@@ -15,11 +20,14 @@ import org.beetl.core.resource.StringTemplateResourceLoader;
 import org.redisson.api.RBucket;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.hexun.cache.IRedisClient;
 import com.hexun.common.utils.JsonUtils;
 import com.hexun.gateway.common.AggregationUtils;
 import com.hexun.gateway.common.Constant;
 import com.hexun.gateway.pojo.AggregationResource;
+
+import io.netty.handler.codec.http.HttpMethod;
 
 /**
  * 聚合请求抽象类
@@ -39,6 +47,11 @@ public abstract class AbstractAggregatorRequest<T> implements AggregatorRequest<
      * GroupTemplate
      */
     private GroupTemplate groupTemplate;
+    
+    /**
+     * JsonUtils
+     */
+    public static final JsonUtils JSONUTILS = new JsonUtils();
 
     /**
      * 初始化GroupTemplate
@@ -51,6 +64,63 @@ public abstract class AbstractAggregatorRequest<T> implements AggregatorRequest<
         Configuration cfg = Configuration.defaultConfiguration();
         groupTemplate = new GroupTemplate(resourceLoader, cfg);
     }
+	
+	
+	/**
+	 * 并行
+	 * 
+	 * @param resources
+	 * @return
+	 */
+	@Override
+	public String parallel(List<AggregationResource> resources) {
+		Map<String, String> resultMap = new HashMap<>();
+		Map<AggregationResource, T> monoMap = new HashMap<>();
+		for (AggregationResource resource : resources) {
+			String value = getCacheResult(resource);
+			if (StringUtils.isNotEmpty(value)) {
+				resultMap.put(resource.getResourceName(), value);
+			} else {
+				monoMap.put(resource, execute(resource));
+			}
+		}
+
+		for (Map.Entry<AggregationResource, T> entry : monoMap.entrySet()) {
+			AggregationResource resource = entry.getKey();
+			T t = entry.getValue();
+			// 获取执行结果
+			String value = futureResult(resource, t);
+			resultMap.put(resource.getResourceName(), value);
+		}
+		
+		StringBuilder result = new StringBuilder();
+		for (Map.Entry<String, String> entry : resultMap.entrySet()) {
+			if (result.length() > 0) {
+				result.append(",");
+			}
+			result.append("\"" + entry.getKey() + "\":" + entry.getValue());
+		}
+		result.insert(0, "{").append("}");
+		return result.toString();
+	}
+	
+	/**
+	 * 串行
+	 * 
+	 * @param resources
+	 * @return
+	 */
+	@Override
+	public String serial(List<AggregationResource> resources) {
+		// 排序
+        Collections.sort(resources);
+        // 串行
+        String result = serialWorker(resources.iterator(), null);
+        if (StringUtils.isEmpty(result)) {
+        	result = "{}";
+        }
+        return result;
+	}
 	
 	/**
 	 * 从缓存中获取信息
@@ -76,7 +146,7 @@ public abstract class AbstractAggregatorRequest<T> implements AggregatorRequest<
 	 */
 	public T execute(AggregationResource resource) {
 		// 执行请求
-		if ("GET".equalsIgnoreCase(resource.getResourceMethod())) {
+		if (HttpMethod.GET.name().equalsIgnoreCase(resource.getResourceMethod())) {
 			return get(resource);
 		} else {
 			String url = resource.getResourceUrl();
@@ -90,17 +160,52 @@ public abstract class AbstractAggregatorRequest<T> implements AggregatorRequest<
 	}
 	
 	/**
+     * 串行执行
+     *
+     * @param iter
+     * @param value
+     */
+    public String serialWorker(Iterator<AggregationResource> iter, String value) {
+        if (iter.hasNext()) {
+            AggregationResource resource = iter.next();
+            if (StringUtils.isNotEmpty(value)) {
+                // 使用提取参数模板提取上一个请求结果的参数
+            	String content = beetlTemplate(resource.getResourceName(), value, resource.getResourceRegex());
+            	if (StringUtils.isEmpty(content)) {
+            		return value;
+            	}
+            	Map<String, String> paramMap = JSONUTILS.deserialize(content, new TypeReference<Map<String, String>>() {});
+            	if (MapUtils.isEmpty(paramMap)) {
+            		return value;
+            	}
+            	// 替换{xx}参数内容
+            	resource.setResourceUrl(AggregationUtils.replace(resource.getResourceUrl(), paramMap));
+            }
+            
+            // 执行请求
+            T t = execute(resource);
+            
+            // 获取执行结果
+			String result = futureResult(resource, t);
+			
+            // 递归调用
+            return serialWorker(iter, result);
+        }
+        return value;
+    }
+	
+	/**
 	 * 获取异步结果
 	 * 
 	 * @param resource
-	 * @param callback
+	 * @param t
 	 * @return
 	 */
 	public String futureResult(AggregationResource resource, T t) {
 		// 获取结果
 		String content = result(resource, t);
 		if (StringUtils.isEmpty(content)) {
-			return content;
+			return resource.getDefaultValue();
 		}
 
 		// 根据模板获取内容
@@ -109,7 +214,7 @@ public abstract class AbstractAggregatorRequest<T> implements AggregatorRequest<
 		// 设置缓存
 		setCache(resource, content);
 		
-		return content;
+		return StringUtils.isEmpty(content) ? resource.getDefaultValue() : content;
 	}
 	
 	/**
@@ -151,7 +256,7 @@ public abstract class AbstractAggregatorRequest<T> implements AggregatorRequest<
 	 * @param templateStr
 	 * @return
 	 */
-	private String beetlTemplate(String key, String value, String templateStr) {
+	public String beetlTemplate(String key, String value, String templateStr) {
 		if (StringUtils.isEmpty(templateStr)) {
 			return value;
 		}

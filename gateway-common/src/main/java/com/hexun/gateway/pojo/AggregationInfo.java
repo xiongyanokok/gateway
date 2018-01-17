@@ -1,5 +1,6 @@
 package com.hexun.gateway.pojo;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -8,7 +9,12 @@ import java.util.List;
  * @author admin
  * @date 2017年05月13日 上午10:35:00
  */
-public class AggregationInfo {
+public class AggregationInfo implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
      * 聚合名称

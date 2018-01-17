@@ -1,13 +1,11 @@
 package com.hexun.gateway.aggregator;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -31,58 +29,6 @@ public class HttpClientAggregatorRequest extends AbstractAggregatorRequest<Futur
 	 * logger
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(HttpClientAggregatorRequest.class);
-	
-	/**
-	 * 并行
-	 * 
-	 * @param resources
-	 * @return
-	 */
-	@Override
-	public String parallel(List<AggregationResource> resources) {
-		Map<String, String> resultMap = new HashMap<>();
-		Map<AggregationResource, Future<String>> futureMap = new HashMap<>();
-		for (AggregationResource resource : resources) {
-			String value = getCacheResult(resource);
-			if (StringUtils.isNotEmpty(value)) {
-				resultMap.put(resource.getResourceName(), value);
-			} else {
-				futureMap.put(resource, execute(resource));
-			}
-		}
-
-		for (Map.Entry<AggregationResource, Future<String>> entry : futureMap.entrySet()) {
-			AggregationResource resource = entry.getKey();
-			Future<String> future = entry.getValue();
-			// 获取执行结果
-			String value = futureResult(resource, future);
-			if (StringUtils.isEmpty(value)) {
-				value = resource.getDefaultValue();
-			}
-			resultMap.put(resource.getResourceName(), value);
-		}
-
-		StringBuilder result = new StringBuilder();
-		for (Map.Entry<String, String> entry : resultMap.entrySet()) {
-			if (result.length() > 0) {
-				result.append(",");
-			}
-			result.append("\"" + entry.getKey() + "\":" + entry.getValue());
-		}
-		result.insert(0, "{").append("}");
-		return result.toString();
-	}
-	
-	/**
-	 * 串行
-	 * 
-	 * @param resources
-	 * @return
-	 */
-	@Override
-	public String serial(List<AggregationResource> resources) {
-		return null;
-	}
 	
 	/**
 	 * 执行get请求

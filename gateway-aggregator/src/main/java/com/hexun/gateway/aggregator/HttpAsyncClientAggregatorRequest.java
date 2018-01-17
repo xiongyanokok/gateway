@@ -3,7 +3,6 @@ package com.hexun.gateway.aggregator;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -13,7 +12,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -45,71 +43,30 @@ public class HttpAsyncClientAggregatorRequest extends AbstractAggregatorRequest<
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(HttpAsyncClientAggregatorRequest.class);
 	
+	/**
+	 * HttpAsyncClients
+	 */
 	private CloseableHttpAsyncClient httpClient;
 	
+	/**
+	 * 初始化 HttpAsyncClients
+	 */
 	@PostConstruct
 	public void create() {
 		httpClient = HttpAsyncClients.createDefault();
 		httpClient.start();
 	}
 	
+	/**
+	 * 关闭 HttpAsyncClients
+	 * 
+	 * @throws IOException
+	 */
 	@PreDestroy
 	public void close() throws IOException {
 		if (null != httpClient) {
 			httpClient.close();
 		}
-	}
-	
-	/**
-	 * 并行
-	 * 
-	 * @param resources
-	 * @return
-	 */
-	@Override
-	public String parallel(List<AggregationResource> resources) {
-		Map<String, String> resultMap = new HashMap<>();
-		Map<AggregationResource, Future<HttpResponse>> futureMap = new HashMap<>();
-		for (AggregationResource resource : resources) {
-			String value = getCacheResult(resource);
-			if (StringUtils.isNotEmpty(value)) {
-				resultMap.put(resource.getResourceName(), value);
-			} else {
-				futureMap.put(resource, execute(resource));
-			}
-		}
-
-		for (Map.Entry<AggregationResource, Future<HttpResponse>> entry : futureMap.entrySet()) {
-			AggregationResource resource = entry.getKey();
-			Future<HttpResponse> future = entry.getValue();
-			// 获取异步执行的结果
-			String value = futureResult(resource, future);
-			if (StringUtils.isEmpty(value)) {
-				value = resource.getDefaultValue();
-			}
-			resultMap.put(resource.getResourceName(), value);
-		}
-
-		StringBuilder result = new StringBuilder();
-		for (Map.Entry<String, String> entry : resultMap.entrySet()) {
-			if (result.length() > 0) {
-				result.append(",");
-			}
-			result.append("\"" + entry.getKey() + "\":" + entry.getValue());
-		}
-		result.insert(0, "{").append("}");
-		return result.toString();
-	}
-	
-	/**
-	 * 串行
-	 * 
-	 * @param resources
-	 * @return
-	 */
-	@Override
-	public String serial(List<AggregationResource> resources) {
-		return null;
 	}
 	
 	/**

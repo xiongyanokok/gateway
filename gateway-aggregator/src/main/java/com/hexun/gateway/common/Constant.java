@@ -42,7 +42,6 @@ public final class Constant {
 	 */
 	public static final String CACHEKEY = "aggregator:%s:%s:%s";
 	
-	
 	/**
 	 * 登录地址
 	 */

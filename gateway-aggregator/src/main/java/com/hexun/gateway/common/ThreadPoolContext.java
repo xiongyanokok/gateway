@@ -22,7 +22,7 @@ public final class ThreadPoolContext {
 	/**
 	 * 线程池
 	 */
-	private static final ExecutorService threadPool = new ThreadPoolExecutor(10, 100, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
+	private static final ExecutorService THREADPOOL = new ThreadPoolExecutor(10, 100, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
 	
 	/**
 	 * 异步执行
@@ -31,7 +31,7 @@ public final class ThreadPoolContext {
 	 * @return
 	 */
 	public static <T> Future<T> submit(Callable<T> callable) {
-		return threadPool.submit(callable);
+		return THREADPOOL.submit(callable);
 	}
 	
 	/**
@@ -40,14 +40,14 @@ public final class ThreadPoolContext {
 	 * @param runnable
 	 */
 	public static void execute(Runnable runnable) {
-		threadPool.execute(runnable);
+		THREADPOOL.execute(runnable);
 	}
 	
 	/**
 	 * 关闭线程池
 	 */
 	public static void shutdown() {
-		threadPool.shutdown();
+		THREADPOOL.shutdown();
 	}
 	
 }
