@@ -7,6 +7,22 @@
          http://www.springframework.org/schema/context
          http://www.springframework.org/schema/context/spring-context.xsd">
 
+	<!-- spring thread pool executor -->           
+    <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <!-- 线程池维护线程的最少数量 -->
+        <property name="corePoolSize" value="10" />
+        <!-- 允许的空闲时间 -->
+        <property name="keepAliveSeconds" value="10" />
+        <!-- 线程池维护线程的最大数量 -->
+        <property name="maxPoolSize" value="100" />
+        <!-- 缓存队列 -->
+        <property name="queueCapacity" value="1000" />
+        <!-- 对拒绝task的处理策略 -->
+        <property name="rejectedExecutionHandler">
+            <bean class="java.util.concurrent.ThreadPoolExecutor$CallerRunsPolicy" />
+        </property>
+    </bean>
+
 	<!-- zookeeper registry center -->
 	<bean id="registryCenter" class="com.hexun.gateway.zookeeper.ZookeeperRegistryCenter">
 		<property name="servers" value="${zookeeper.servers}"/>

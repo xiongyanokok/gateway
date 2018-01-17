@@ -8,12 +8,13 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.collections4.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 import com.hexun.common.http.RequestPackage;
 import com.hexun.common.http.ResponsePackage;
 import com.hexun.gateway.common.Constant;
-import com.hexun.gateway.common.ThreadPoolContext;
 import com.hexun.gateway.pojo.AggregationResource;
 
 /**
@@ -30,6 +31,9 @@ public class HttpClientAggregatorRequest extends AbstractAggregatorRequest<Futur
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(HttpClientAggregatorRequest.class);
 	
+	@Autowired
+	private ThreadPoolTaskExecutor taskExecutor;
+	
 	/**
 	 * 执行get请求
 	 * 
@@ -38,7 +42,7 @@ public class HttpClientAggregatorRequest extends AbstractAggregatorRequest<Futur
 	 */
 	@Override
 	public Future<String> get(AggregationResource resource) {
-		return ThreadPoolContext.submit(() -> {
+		return taskExecutor.submit(() -> {
 			RequestPackage requestPackage = RequestPackage.get(resource.getResourceUrl());
 	        if (resource.getIsLogin()) {
 	        	// 设置cookie
@@ -64,7 +68,7 @@ public class HttpClientAggregatorRequest extends AbstractAggregatorRequest<Futur
 	 */
 	@Override
 	public Future<String> post(AggregationResource resource) {
-		return ThreadPoolContext.submit(() -> {
+		return taskExecutor.submit(() -> {
 			RequestPackage requestPackage = RequestPackage.post(resource.getResourceUrl());
 			if (resource.getIsLogin()) {
 				// 设置cookie

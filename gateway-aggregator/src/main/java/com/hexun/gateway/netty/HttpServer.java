@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.hexun.gateway.common.ThreadPoolContext;
-
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -23,6 +21,12 @@ import io.netty.handler.codec.http.HttpResponseEncoder;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.util.concurrent.DefaultThreadFactory;
 
+/**
+ * netty server
+ * 
+ * @author xiongyan
+ * @date 2018年1月15日 下午6:04:10
+ */
 @Component
 public class HttpServer {
 
@@ -93,7 +97,6 @@ public class HttpServer {
 			bossGroup.shutdownGracefully();
 			bossGroup = null;
 		}
-		ThreadPoolContext.shutdown();
 	}
 	
 }
