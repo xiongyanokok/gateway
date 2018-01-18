@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.hexun.gateway.enums.MethodEnum;
 import com.hexun.gateway.enums.TimeUnitEnum;
 import com.hexun.gateway.enums.TrueFalseStatusEnum;
+import com.hexun.gateway.model.Aggregator;
+import com.hexun.gateway.model.AggregatorResource;
 import com.hexun.gateway.model.ApiCache;
 import com.hexun.gateway.model.ApiInfo;
 import com.hexun.gateway.model.ApiIp;
@@ -26,11 +28,15 @@ import com.hexun.gateway.model.ApiProject;
 import com.hexun.gateway.model.ApiRateLimit;
 import com.hexun.gateway.model.ApiSign;
 import com.hexun.gateway.model.ApiUser;
+import com.hexun.gateway.pojo.AggregatorInfo;
 import com.hexun.gateway.pojo.CacheInfo;
 import com.hexun.gateway.pojo.GatewayInfo;
 import com.hexun.gateway.pojo.ProjectInfo;
 import com.hexun.gateway.pojo.RateLimitInfo;
+import com.hexun.gateway.pojo.ResourceInfo;
 import com.hexun.gateway.pojo.SignInfo;
+import com.hexun.gateway.service.AggregatorResourceService;
+import com.hexun.gateway.service.AggregatorService;
 import com.hexun.gateway.service.ApiCacheService;
 import com.hexun.gateway.service.ApiInfoService;
 import com.hexun.gateway.service.ApiIpService;
@@ -69,6 +75,12 @@ public class IndexController extends BaseController {
 	
 	@Autowired
 	private ApiUserService apiUserService;
+	
+	@Autowired
+	private AggregatorService aggregatorService;
+	
+	@Autowired
+	private AggregatorResourceService aggregatorResourceService;
 	
     /**
 	 * 首页
@@ -189,6 +201,55 @@ public class IndexController extends BaseController {
 		}
 		
 		return gatewayInfos;
+	}
+	
+	/**
+	 * 聚合信息
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/aggregator", method = { RequestMethod.GET })
+	@ResponseBody
+	public List<AggregatorInfo> aggregatorInfo() {
+		Map<String, Object> map = new HashMap<>();
+		map.put("isDelete", TrueFalseStatusEnum.FALSE.getValue());
+		List<Aggregator> aggregators = aggregatorService.listAggregator(map);
+		if (CollectionUtils.isEmpty(aggregators)) {
+			return Collections.emptyList();
+		}
+		
+		List<AggregatorResource> aggregatorResources = aggregatorResourceService.listAggregatorResource(map);
+		
+		List<AggregatorInfo> aggregatorInfos = new ArrayList<>();
+		for (Aggregator aggregator : aggregators) {
+			AggregatorInfo aggregatorInfo = new AggregatorInfo();
+			aggregatorInfo.setName(aggregator.getName());
+			aggregatorInfo.setUri(aggregator.getUri());
+			aggregatorInfo.setType(aggregator.getType());
+			aggregatorInfos.add(aggregatorInfo);
+			
+			List<ResourceInfo> resourceInfos = new ArrayList<>();
+			aggregatorInfo.setResourceInfos(resourceInfos);
+			for (AggregatorResource resource : aggregatorResources) {
+				if (aggregator.getId() == resource.getAggregatorId()) {
+					ResourceInfo resourceInfo = new ResourceInfo();
+					resourceInfo.setName(aggregator.getName());
+					resourceInfo.setResourceIndex(resource.getResourceIndex());
+					resourceInfo.setResourceName(resource.getResourceName());
+					resourceInfo.setResourceUrl(resource.getResourceUrl());
+					resourceInfo.setResourceMethod(resource.getResourceMethod());
+					resourceInfo.setIsLogin(resource.getIsLogin());
+					resourceInfo.setTimeOut(resource.getTimeOut());
+					resourceInfo.setIsCache(resource.getIsCache());
+					resourceInfo.setCacheTime(resource.getCacheTime());
+					resourceInfo.setResultTemplate(resource.getResultTemplate());
+					resourceInfo.setParamTemplate(resource.getParamTemplate());
+					resourceInfo.setDefaultValue(resource.getDefaultValue());
+					resourceInfos.add(resourceInfo);
+				}
+			}
+		}
+		return aggregatorInfos;
 	}
     
 }

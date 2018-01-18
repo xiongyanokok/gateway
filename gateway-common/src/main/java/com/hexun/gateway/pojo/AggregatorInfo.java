@@ -9,7 +9,7 @@ import java.util.List;
  * @author admin
  * @date 2017年05月13日 上午10:35:00
  */
-public class AggregationInfo implements Serializable {
+public class AggregatorInfo implements Serializable {
 
 	/**
 	 * 
@@ -34,7 +34,7 @@ public class AggregationInfo implements Serializable {
 	/**
 	 * 聚合资源
 	 */
-	private List<AggregationResource> resources;
+	private List<ResourceInfo> resourceInfos;
 
 	public String getName() {
 		return name;
@@ -60,39 +60,12 @@ public class AggregationInfo implements Serializable {
 		this.type = type;
 	}
 
-	public List<AggregationResource> getResources() {
-		return resources;
+	public List<ResourceInfo> getResourceInfos() {
+		return resourceInfos;
 	}
 
-	public void setResources(List<AggregationResource> resources) {
-		this.resources = resources;
-	}
-	
-	/**
-	 * 聚合类型
-	 */
-	public enum AggregationType {
-
-		/**
-		 * 并行
-		 */
-		PARALLEL(1),
-		
-		/**
-		 * 串行
-		 */
-		SERIAL(2);
-		
-		private Integer value;
-		
-		private AggregationType(Integer value){
-			this.value= value;
-		}
-
-		public Integer getValue() {
-			return value;
-		}
-		
+	public void setResourceInfos(List<ResourceInfo> resourceInfos) {
+		this.resourceInfos = resourceInfos;
 	}
 
 }

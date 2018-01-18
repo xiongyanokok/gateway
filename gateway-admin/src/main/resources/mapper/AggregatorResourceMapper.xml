@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hexun.gateway.mapper.AggregatorResourceMapper">
+	
+  	<resultMap id="BaseResultMap" type="com.hexun.gateway.model.AggregatorResource">
+		<id column="id" property="id" />	
+	    <result column="aggregator_id" property="aggregatorId" />
+	    <result column="resource_index" property="resourceIndex" />
+	    <result column="resource_name" property="resourceName" />
+	    <result column="resource_url" property="resourceUrl" />
+	    <result column="resource_method" property="resourceMethod" />
+	    <result column="is_login" property="isLogin" />
+	    <result column="time_out" property="timeOut" />
+	    <result column="is_cache" property="isCache" />
+	    <result column="cache_time" property="cacheTime" />
+	    <result column="result_template" property="resultTemplate" />
+	    <result column="param_template" property="paramTemplate" />
+	    <result column="default_value" property="defaultValue" />
+	    <result column="is_delete" property="isDelete" />
+	    <result column="create_user_id" property="createUserId" />
+	    <result column="create_time" property="createTime" />
+	    <result column="update_user_id" property="updateUserId" />
+	    <result column="update_time" property="updateTime" />
+  	</resultMap>
+  	
+  	<!-- 表所有字段 -->
+  	<sql id="Base_Column_List">
+  		id, aggregator_id, resource_index, resource_name, resource_url, resource_method, is_login, time_out, is_cache, cache_time, result_template, param_template, default_value, is_delete, create_user_id, create_time, update_user_id, update_time
+  	</sql>
+  	
+  	<!-- 根据主键查询 -->
+  	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    	select 
+    	<include refid="Base_Column_List" />
+    	from gateway_aggregator_resource
+		where id = #{id}
+  	</select>
+  	
+  	<!-- 新增数据库记录 -->
+  	<insert id="insert" parameterType="com.hexun.gateway.model.AggregatorResource">
+    	<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	    insert into gateway_aggregator_resource
+    		<trim prefix="(" suffix=")" suffixOverrides=",">
+		      	<if test="id != null">
+		        	id,
+		      	</if>
+		      	<if test="aggregatorId != null">
+		        	aggregator_id,
+		      	</if>
+		      	<if test="resourceIndex != null">
+		        	resource_index,
+		      	</if>
+		      	<if test="resourceName != null">
+		        	resource_name,
+		      	</if>
+		      	<if test="resourceUrl != null">
+		        	resource_url,
+		      	</if>
+		      	<if test="resourceMethod != null">
+		        	resource_method,
+		      	</if>
+		      	<if test="isLogin != null">
+		        	is_login,
+		      	</if>
+		      	<if test="timeOut != null">
+		        	time_out,
+		      	</if>
+		      	<if test="isCache != null">
+		        	is_cache,
+		      	</if>
+		      	<if test="cacheTime != null">
+		        	cache_time,
+		      	</if>
+		      	<if test="resultTemplate != null">
+		        	result_template,
+		      	</if>
+		      	<if test="paramTemplate != null">
+		        	param_template,
+		      	</if>
+		      	<if test="defaultValue != null">
+		        	default_value,
+		      	</if>
+		      	<if test="isDelete != null">
+		        	is_delete,
+		      	</if>
+		      	<if test="createUserId != null">
+		        	create_user_id,
+		      	</if>
+		      	<if test="createTime != null">
+		        	create_time,
+		      	</if>
+		      	<if test="updateUserId != null">
+		        	update_user_id,
+		      	</if>
+		      	<if test="updateTime != null">
+		        	update_time,
+		      	</if>
+    		</trim>
+    	values
+    		<trim prefix="(" suffix=")" suffixOverrides=",">
+      			<if test="id != null">
+        			#{id},
+      			</if>
+      			<if test="aggregatorId != null">
+        			#{aggregatorId},
+      			</if>
+      			<if test="resourceIndex != null">
+        			#{resourceIndex},
+      			</if>
+      			<if test="resourceName != null">
+        			#{resourceName},
+      			</if>
+      			<if test="resourceUrl != null">
+        			#{resourceUrl},
+      			</if>
+      			<if test="resourceMethod != null">
+        			#{resourceMethod},
+      			</if>
+      			<if test="isLogin != null">
+        			#{isLogin},
+      			</if>
+      			<if test="timeOut != null">
+        			#{timeOut},
+      			</if>
+      			<if test="isCache != null">
+        			#{isCache},
+      			</if>
+      			<if test="cacheTime != null">
+        			#{cacheTime},
+      			</if>
+      			<if test="resultTemplate != null">
+        			#{resultTemplate},
+      			</if>
+      			<if test="paramTemplate != null">
+        			#{paramTemplate},
+      			</if>
+      			<if test="defaultValue != null">
+        			#{defaultValue},
+      			</if>
+      			<if test="isDelete != null">
+        			#{isDelete},
+      			</if>
+      			<if test="createUserId != null">
+        			#{createUserId},
+      			</if>
+      			<if test="createTime != null">
+        			#{createTime},
+      			</if>
+      			<if test="updateUserId != null">
+        			#{updateUserId},
+      			</if>
+      			<if test="updateTime != null">
+        			#{updateTime},
+      			</if>
+    		</trim>
+  	</insert>
+  	
+  	<!-- 更新数据库记录 -->
+  	<update id="update" parameterType="com.hexun.gateway.model.AggregatorResource">
+    	update gateway_aggregator_resource
+    	<set>
+			<if test="aggregatorId != null">
+    			aggregator_id = #{aggregatorId},
+  			</if>
+			<if test="resourceIndex != null">
+    			resource_index = #{resourceIndex},
+  			</if>
+			<if test="resourceName != null">
+    			resource_name = #{resourceName},
+  			</if>
+			<if test="resourceUrl != null">
+    			resource_url = #{resourceUrl},
+  			</if>
+			<if test="resourceMethod != null">
+    			resource_method = #{resourceMethod},
+  			</if>
+			<if test="isLogin != null">
+    			is_login = #{isLogin},
+  			</if>
+			<if test="timeOut != null">
+    			time_out = #{timeOut},
+  			</if>
+			<if test="isCache != null">
+    			is_cache = #{isCache},
+  			</if>
+			<if test="cacheTime != null">
+    			cache_time = #{cacheTime},
+  			</if>
+			<if test="resultTemplate != null">
+    			result_template = #{resultTemplate},
+  			</if>
+			<if test="paramTemplate != null">
+    			param_template = #{paramTemplate},
+  			</if>
+			<if test="defaultValue != null">
+    			default_value = #{defaultValue},
+  			</if>
+			<if test="isDelete != null">
+    			is_delete = #{isDelete},
+  			</if>
+			<if test="updateUserId != null">
+    			update_user_id = #{updateUserId},
+  			</if>
+    	</set>
+    	<where>
+    		id = #{id}
+    	</where>
+  	</update>
+  	
+	<!-- 根据map查询 -->
+  	<select id="getAggregatorResource" resultMap="BaseResultMap" parameterType="java.util.Map">
+  		select
+        <include refid="Base_Column_List"/>
+        from gateway_aggregator_resource
+        <where>
+  			<if test="id != null">
+    			and id = #{id}
+  			</if>
+  			<if test="aggregatorId != null">
+    			and aggregator_id = #{aggregatorId}
+  			</if>
+  			<if test="resourceIndex != null">
+    			and resource_index = #{resourceIndex}
+  			</if>
+  			<if test="resourceName != null">
+    			and resource_name = #{resourceName}
+  			</if>
+  			<if test="resourceUrl != null">
+    			and resource_url = #{resourceUrl}
+  			</if>
+  			<if test="resourceMethod != null">
+    			and resource_method = #{resourceMethod}
+  			</if>
+  			<if test="isLogin != null">
+    			and is_login = #{isLogin}
+  			</if>
+  			<if test="timeOut != null">
+    			and time_out = #{timeOut}
+  			</if>
+  			<if test="isCache != null">
+    			and is_cache = #{isCache}
+  			</if>
+  			<if test="cacheTime != null">
+    			and cache_time = #{cacheTime}
+  			</if>
+  			<if test="resultTemplate != null">
+    			and result_template = #{resultTemplate}
+  			</if>
+  			<if test="paramTemplate != null">
+    			and param_template = #{paramTemplate}
+  			</if>
+  			<if test="defaultValue != null">
+    			and default_value = #{defaultValue}
+  			</if>
+  			<if test="isDelete != null">
+    			and is_delete = #{isDelete}
+  			</if>
+  			<if test="createUserId != null">
+    			and create_user_id = #{createUserId}
+  			</if>
+  			<if test="createTime != null">
+    			and create_time = #{createTime}
+  			</if>
+  			<if test="updateUserId != null">
+    			and update_user_id = #{updateUserId}
+  			</if>
+  			<if test="updateTime != null">
+    			and update_time = #{updateTime}
+  			</if>
+        </where>
+  	</select>
+  
+  	<!-- 根据map查询 -->
+  	<select id="listAggregatorResource" resultMap="BaseResultMap" parameterType="java.util.Map">
+  		select
+        <include refid="Base_Column_List"/>
+        from gateway_aggregator_resource
+        <where>
+  			<if test="aggregatorId != null">
+    			and aggregator_id = #{aggregatorId}
+  			</if>
+  			<if test="resourceIndex != null">
+    			and resource_index = #{resourceIndex}
+  			</if>
+  			<if test="resourceName != null">
+    			and resource_name = #{resourceName}
+  			</if>
+  			<if test="resourceUrl != null">
+    			and resource_url = #{resourceUrl}
+  			</if>
+  			<if test="resourceMethod != null">
+    			and resource_method = #{resourceMethod}
+  			</if>
+  			<if test="isLogin != null">
+    			and is_login = #{isLogin}
+  			</if>
+  			<if test="timeOut != null">
+    			and time_out = #{timeOut}
+  			</if>
+  			<if test="isCache != null">
+    			and is_cache = #{isCache}
+  			</if>
+  			<if test="cacheTime != null">
+    			and cache_time = #{cacheTime}
+  			</if>
+  			<if test="resultTemplate != null">
+    			and result_template = #{resultTemplate}
+  			</if>
+  			<if test="paramTemplate != null">
+    			and param_template = #{paramTemplate}
+  			</if>
+  			<if test="defaultValue != null">
+    			and default_value = #{defaultValue}
+  			</if>
+  			<if test="isDelete != null">
+    			and is_delete = #{isDelete}
+  			</if>
+  			<if test="createUserId != null">
+    			and create_user_id = #{createUserId}
+  			</if>
+  			<if test="createTime != null">
+    			and create_time = #{createTime}
+  			</if>
+  			<if test="updateUserId != null">
+    			and update_user_id = #{updateUserId}
+  			</if>
+  			<if test="updateTime != null">
+    			and update_time = #{updateTime}
+  			</if>
+        </where>
+        <if test="groupBy != null">
+        	group by ${groupBy}
+        </if>
+        <if test="orderBy != null">
+        	order by ${orderBy}
+        </if>
+  	</select>
+  	
+  	<!-- 批量保存 -->
+	<insert id="batchInsert" parameterType="java.util.List">
+		insert into gateway_aggregator_resource (<include refid="Base_Column_List" />)
+		values 
+		<foreach collection="list" index="index" item="item" separator=",">
+			<trim prefix="(" suffix=")" suffixOverrides=",">
+				#{item.id},
+				#{item.aggregatorId},
+				#{item.resourceIndex},
+				#{item.resourceName},
+				#{item.resourceUrl},
+				#{item.resourceMethod},
+				#{item.isLogin},
+				#{item.timeOut},
+				#{item.isCache},
+				#{item.cacheTime},
+				#{item.resultTemplate},
+				#{item.paramTemplate},
+				#{item.defaultValue},
+				#{item.isDelete},
+				#{item.createUserId},
+				#{item.createTime},
+				#{item.updateUserId},
+				#{item.updateTime},
+			</trim>
+		</foreach>
+	</insert>
+	
+	<!-- 批量更新 -->
+  	<update id="batchUpdate" parameterType="java.util.List">
+		<foreach collection="list" index="index" item="item" separator=";">
+			update gateway_aggregator_resource
+			<set>
+        		<if test="item.aggregatorId != null">
+        			aggregator_id = #{item.aggregatorId},
+        		</if>
+        		<if test="item.resourceIndex != null">
+        			resource_index = #{item.resourceIndex},
+        		</if>
+        		<if test="item.resourceName != null">
+        			resource_name = #{item.resourceName},
+        		</if>
+        		<if test="item.resourceUrl != null">
+        			resource_url = #{item.resourceUrl},
+        		</if>
+        		<if test="item.resourceMethod != null">
+        			resource_method = #{item.resourceMethod},
+        		</if>
+        		<if test="item.isLogin != null">
+        			is_login = #{item.isLogin},
+        		</if>
+        		<if test="item.timeOut != null">
+        			time_out = #{item.timeOut},
+        		</if>
+        		<if test="item.isCache != null">
+        			is_cache = #{item.isCache},
+        		</if>
+        		<if test="item.cacheTime != null">
+        			cache_time = #{item.cacheTime},
+        		</if>
+        		<if test="item.resultTemplate != null">
+        			result_template = #{item.resultTemplate},
+        		</if>
+        		<if test="item.paramTemplate != null">
+        			param_template = #{item.paramTemplate},
+        		</if>
+        		<if test="item.defaultValue != null">
+        			default_value = #{item.defaultValue},
+        		</if>
+        		<if test="item.isDelete != null">
+        			is_delete = #{item.isDelete},
+        		</if>
+        		<if test="item.updateUserId != null">
+        			update_user_id = #{item.updateUserId},
+        		</if>
+			</set>
+            where id = #{item.id}
+		</foreach>
+	</update>
+	
+</mapper>

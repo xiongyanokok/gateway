@@ -11,12 +11,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.hexun.gateway.aggregator.AggregatorRequest;
-import com.hexun.gateway.common.AggregationCache;
-import com.hexun.gateway.common.AggregationUtils;
+import com.hexun.gateway.common.AggregatorCache;
+import com.hexun.gateway.common.AggregatorUtils;
 import com.hexun.gateway.common.Constant;
-import com.hexun.gateway.pojo.AggregationInfo;
-import com.hexun.gateway.pojo.AggregationInfo.AggregationType;
-import com.hexun.gateway.pojo.AggregationResource;
+import com.hexun.gateway.enums.AggregatorTypeEnum;
+import com.hexun.gateway.pojo.AggregatorInfo;
+import com.hexun.gateway.pojo.ResourceInfo;
 import com.hexun.gateway.pojo.Result;
 
 import io.netty.channel.ChannelHandler.Sharable;
@@ -70,20 +70,21 @@ public class HttpServerInboundHandler extends SimpleChannelInboundHandler<HttpRe
 
 			// 聚合名称
 			String name = uri.substring(Constant.PREFIX.length());
-			if (name.contains("?")) {
-				name = name.substring(0, name.indexOf('?'));
+			int index = name.indexOf('?');
+			if (index != -1) {
+				name = name.substring(0, index);
 			}
-			AggregationInfo aggregationInfo = AggregationCache.get(name);
-			if (null == aggregationInfo || CollectionUtils.isEmpty(aggregationInfo.getResources())) {
+			AggregatorInfo aggregatorInfo = AggregatorCache.get(name);
+			if (null == aggregatorInfo || CollectionUtils.isEmpty(aggregatorInfo.getResourceInfos())) {
 				return;
 			}
 
 			// 获取聚合资源
-			List<AggregationResource> resources = AggregationUtils.getAggregationResource(request, aggregationInfo.getResources());
+			List<ResourceInfo> resources = AggregatorUtils.listResourceInfo(request, aggregatorInfo.getResourceInfos());
 
 			// 获取客户端
 			AggregatorRequest<?> aggregatorRequest = aggregatorRequestMap.get(key);
-			if (AggregationType.PARALLEL.getValue().equals(aggregationInfo.getType())) {
+			if (AggregatorTypeEnum.PARALLEL.getValue().equals(aggregatorInfo.getType())) {
 				result = aggregatorRequest.parallel(resources);
 			} else {
 				result = aggregatorRequest.serial(resources);
@@ -93,10 +94,10 @@ public class HttpServerInboundHandler extends SimpleChannelInboundHandler<HttpRe
 			logger.error("【{}】聚合失败:", uri, e);
 		} finally {
 			if (uri.contains(Constant.CALLBACK)) {
-				String callback = AggregationUtils.getParamMap(uri).get(Constant.CALLBACK);
+				String callback = AggregatorUtils.getParamMap(uri).get(Constant.CALLBACK);
 				result = callback + "(" + result + ");";
 			}
-			AggregationUtils.writeAndFlush(ctx, result);
+			AggregatorUtils.writeAndFlush(ctx, result);
 		}
 	}
 

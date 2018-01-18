@@ -2,7 +2,7 @@ package com.hexun.gateway.aggregator;
 
 import java.util.List;
 
-import com.hexun.gateway.pojo.AggregationResource;
+import com.hexun.gateway.pojo.ResourceInfo;
 
 /**
  * 聚合请求接口
@@ -18,7 +18,7 @@ public interface AggregatorRequest<T> {
 	 * @param resources
 	 * @return
 	 */
-	String parallel(List<AggregationResource> resources);
+	String parallel(List<ResourceInfo> resources);
 	
 	/**
 	 * 串行
@@ -26,7 +26,7 @@ public interface AggregatorRequest<T> {
 	 * @param resources
 	 * @return
 	 */
-	String serial(List<AggregationResource> resources);
+	String serial(List<ResourceInfo> resources);
 	
 	/**
 	 * 执行get请求
@@ -34,7 +34,7 @@ public interface AggregatorRequest<T> {
 	 * @param resource
 	 * @return
 	 */
-	T get(AggregationResource resource);
+	T get(ResourceInfo resource);
 	
 	/**
 	 * 执行post请求
@@ -42,7 +42,7 @@ public interface AggregatorRequest<T> {
 	 * @param resource
 	 * @return
 	 */
-	T post(AggregationResource resource);
+	T post(ResourceInfo resource);
 	
 	/**
 	 * 获取结果
@@ -51,6 +51,6 @@ public interface AggregatorRequest<T> {
 	 * @param t
 	 * @return
 	 */
-	String result(AggregationResource resource, T t);
+	String result(ResourceInfo resource, T t);
 	
 }

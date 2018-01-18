@@ -6,11 +6,7 @@ package com.hexun.gateway.common;
  * @author xiongyan
  * @date 2017年10月27日 下午2:09:13
  */
-public final class Constant {
-	
-	private Constant() {
-		
-	}
+public final class Constant extends BaseConstant {
 	
 	/**
 	 * 默认错误页面

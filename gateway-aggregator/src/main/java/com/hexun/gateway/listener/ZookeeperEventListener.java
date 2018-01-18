@@ -14,10 +14,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.hexun.common.http.RequestPackage;
 import com.hexun.common.http.ResponsePackage;
 import com.hexun.common.utils.JsonUtils;
-import com.hexun.gateway.common.AggregationCache;
+import com.hexun.gateway.common.AggregatorCache;
 import com.hexun.gateway.enums.ErrorCodeEnum;
 import com.hexun.gateway.exception.GatewayException;
-import com.hexun.gateway.pojo.AggregationInfo;
+import com.hexun.gateway.pojo.AggregatorInfo;
 
 /**
  * zookeeper 事件监听
@@ -55,7 +55,7 @@ public class ZookeeperEventListener implements TreeCacheListener {
 			logger.info("聚合配置信息发生变化，时间【{}】", data);
 			
 			// 加载聚合配置信息
-			reloadAggregationInfo();
+			reloadAggregatorInfo();
 			logger.info("聚合配置信息重新加载成功");
 		}
 	}
@@ -63,22 +63,22 @@ public class ZookeeperEventListener implements TreeCacheListener {
 	/**
 	 * 加载聚合配置信息
 	 */
-	public void reloadAggregationInfo() {
+	public void reloadAggregatorInfo() {
 		// 获取聚合配置信息
-		String result = getAggregationInfo();
+		String result = getAggregatorInfo();
 		if (StringUtils.isEmpty(result)) {
 			logger.error("获取聚合配置信息为空");
 			return;
 		}
 		// 序列化
-		List<AggregationInfo> aggregationInfos = JsonUtils.string2Obj(result, new TypeReference<List<AggregationInfo>>() { });
-		if (CollectionUtils.isEmpty(aggregationInfos)) {
+		List<AggregatorInfo> aggregatorInfos = JsonUtils.string2Obj(result, new TypeReference<List<AggregatorInfo>>() { });
+		if (CollectionUtils.isEmpty(aggregatorInfos)) {
 			logger.error("聚合配置信息【{}】序列化失败", result);
 			return;
 		}
 		// 放入内存
-		for (AggregationInfo aggregationInfo : aggregationInfos) {
-			AggregationCache.put(aggregationInfo);
+		for (AggregatorInfo aggregatorInfo : aggregatorInfos) {
+			AggregatorCache.put(aggregatorInfo);
 		}
 	}
 	
@@ -87,17 +87,16 @@ public class ZookeeperEventListener implements TreeCacheListener {
 	 * 
 	 * @return
 	 */
-	private String getAggregationInfo() {
+	private String getAggregatorInfo() {
         int times = 0;
         while (times < retryTimes) {
-        	/*ResponsePackage response = RequestPackage.get("http://localhost:8080/gateway").getResponse();
+        	ResponsePackage response = RequestPackage.get("http://localhost:8080/aggregator").getResponse();
 			if (null == response || !response.isSuccess()) {
 				times++;
 				sleep();
 			} else {
 				return response.getContent();
-			}*/
-        	return JsonUtils.obj2String(AggregationCache.init());
+			}
         }
         logger.error("重试【{}】次依然失败", retryTimes);
         throw new GatewayException(ErrorCodeEnum.RETRY_TIMES, "重试【"+retryTimes+"】次");

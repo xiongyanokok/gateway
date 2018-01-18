@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
 
 import com.hexun.gateway.common.Constant;
-import com.hexun.gateway.pojo.AggregationResource;
+import com.hexun.gateway.pojo.ResourceInfo;
 
 /**
  * HttpAsyncClient聚合请求
@@ -75,7 +75,8 @@ public class HttpAsyncClientAggregatorRequest extends AbstractAggregatorRequest<
 	 * @param resource
 	 * @return
 	 */
-	public Future<HttpResponse> get(AggregationResource resource) {
+	@Override
+	public Future<HttpResponse> get(ResourceInfo resource) {
 		HttpGet request = new HttpGet(resource.getResourceUrl());
         if (resource.getIsLogin()) {
         	// 设置cookie
@@ -90,7 +91,8 @@ public class HttpAsyncClientAggregatorRequest extends AbstractAggregatorRequest<
 	 * @param resource
 	 * @return
 	 */
-	public Future<HttpResponse> post(AggregationResource resource) {
+	@Override
+	public Future<HttpResponse> post(ResourceInfo resource) {
 		HttpPost request = new HttpPost(resource.getResourceUrl());
         if (resource.getIsLogin()) {
         	// 设置cookie
@@ -116,7 +118,7 @@ public class HttpAsyncClientAggregatorRequest extends AbstractAggregatorRequest<
 	 * @return
 	 */
 	@Override
-	public String result(AggregationResource resource, Future<HttpResponse> future) {
+	public String result(ResourceInfo resource, Future<HttpResponse> future) {
 		try {
 			HttpResponse response = future.get(resource.getTimeOut(), TimeUnit.SECONDS);
 			if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode()) {

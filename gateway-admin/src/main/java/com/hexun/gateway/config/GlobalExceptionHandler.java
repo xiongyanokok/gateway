@@ -90,7 +90,7 @@ public class GlobalExceptionHandler {
 	 * @return
 	 */
 	private Map<String, Object> errorJson(String message) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>(2);
 		map.put(Constant.DEFAULT_CODE, "N");
 		map.put(Constant.DEFAULT_MESSAGE, message);
         return map; 

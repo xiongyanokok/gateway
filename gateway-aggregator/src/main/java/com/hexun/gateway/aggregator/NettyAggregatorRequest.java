@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.hexun.gateway.pojo.AggregationResource;
+import com.hexun.gateway.pojo.ResourceInfo;
 
 import reactor.core.publisher.Mono;
 import reactor.ipc.netty.http.client.HttpClient;
@@ -33,7 +33,7 @@ public class NettyAggregatorRequest extends AbstractAggregatorRequest<Mono<HttpC
 	 * @return
 	 */
 	@Override
-	public Mono<HttpClientResponse> get(AggregationResource resource) {
+	public Mono<HttpClientResponse> get(ResourceInfo resource) {
 		if (resource.getIsLogin()) {
 			return HttpClient.create().get(resource.getResourceUrl(), req -> req.addHeader("Cookie", resource.getCookie()));
 		} else {
@@ -48,7 +48,7 @@ public class NettyAggregatorRequest extends AbstractAggregatorRequest<Mono<HttpC
 	 * @return
 	 */
 	@Override
-	public Mono<HttpClientResponse> post(AggregationResource resource) {
+	public Mono<HttpClientResponse> post(ResourceInfo resource) {
 		if (resource.getIsLogin()) {
 			return HttpClient.create().post(resource.getResourceUrl(), req -> req.addHeader("Cookie", resource.getCookie()));
 		} else {
@@ -64,7 +64,7 @@ public class NettyAggregatorRequest extends AbstractAggregatorRequest<Mono<HttpC
 	 * @return
 	 */
 	@Override
-	public String result(AggregationResource resource, Mono<HttpClientResponse> mono) {
+	public String result(ResourceInfo resource, Mono<HttpClientResponse> mono) {
 		try {
 			return mono.flatMapMany(s -> s.receive().asString()).reduce(String::concat).block(Duration.ofSeconds(resource.getTimeOut()));
 		} catch (Exception e) {

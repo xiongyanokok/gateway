@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import com.hexun.common.http.RequestPackage;
 import com.hexun.common.http.ResponsePackage;
 import com.hexun.gateway.common.Constant;
-import com.hexun.gateway.pojo.AggregationResource;
+import com.hexun.gateway.pojo.ResourceInfo;
 
 /**
  * HttpClient聚合请求
@@ -41,12 +41,12 @@ public class HttpClientAggregatorRequest extends AbstractAggregatorRequest<Futur
 	 * @return
 	 */
 	@Override
-	public Future<String> get(AggregationResource resource) {
+	public Future<String> get(ResourceInfo resource) {
 		return taskExecutor.submit(() -> {
 			RequestPackage requestPackage = RequestPackage.get(resource.getResourceUrl());
 	        if (resource.getIsLogin()) {
 	        	// 设置cookie
-	            Map<String, String> cookieMap = new HashMap<>();
+	            Map<String, String> cookieMap = new HashMap<>(1);
 	            cookieMap.put("Cookie", resource.getCookie());
 	            requestPackage.setHeaders(cookieMap);
 	        }
@@ -67,12 +67,12 @@ public class HttpClientAggregatorRequest extends AbstractAggregatorRequest<Futur
 	 * @return
 	 */
 	@Override
-	public Future<String> post(AggregationResource resource) {
+	public Future<String> post(ResourceInfo resource) {
 		return taskExecutor.submit(() -> {
 			RequestPackage requestPackage = RequestPackage.post(resource.getResourceUrl());
 			if (resource.getIsLogin()) {
 				// 设置cookie
-				Map<String, String> cookieMap = new HashMap<>();
+				Map<String, String> cookieMap = new HashMap<>(1);
 				cookieMap.put("Cookie", resource.getCookie());
 				requestPackage.setHeaders(cookieMap);
 			}
@@ -99,7 +99,7 @@ public class HttpClientAggregatorRequest extends AbstractAggregatorRequest<Futur
 	 * @return
 	 */
 	@Override
-	public String result(AggregationResource resource, Future<String> future) {
+	public String result(ResourceInfo resource, Future<String> future) {
 		try {
             return future.get(resource.getTimeOut(), TimeUnit.SECONDS);
         } catch (Exception e) {

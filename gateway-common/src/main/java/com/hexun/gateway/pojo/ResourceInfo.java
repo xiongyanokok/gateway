@@ -9,7 +9,7 @@ import java.util.Map;
  * @author admin
  * @date 2017年05月13日 上午10:35:00
  */
-public class AggregationResource implements Comparable<AggregationResource>, Serializable {
+public class ResourceInfo implements Comparable<ResourceInfo>, Serializable {
 
     /**
 	 * 
@@ -37,25 +37,15 @@ public class AggregationResource implements Comparable<AggregationResource>, Ser
     private String resourceUrl;
 
     /**
-     * 请求方法：GET/POST
+     * 请求方法：1GET，2POST
      */
-    private String resourceMethod;
+    private Integer resourceMethod;
 
     /**
      * 是否登录：1是，0否
      */
     private Boolean isLogin;
 
-    /**
-     * cookie
-     */
-    private String cookie;
-    
-    /**
-     * 请求参数
-     */
-    private Map<String, String> paramMap;
-    
     /**
      * 超时时间：单位秒
      */
@@ -72,24 +62,29 @@ public class AggregationResource implements Comparable<AggregationResource>, Ser
     private Integer cacheTime;
     
     /**
-     * 资源模板
+     * 结果模板
      */
-    private String resourceTemplate;
+    private String resultTemplate;
 
     /**
-     * 正则表达式
+     * 参数模板
      */
-    private String resourceRegex;
+    private String paramTemplate;
 
-    /**
-     * 资源分支
-     */
-    private String resourceBranchs;
-    
     /**
      * 资源默认值
      */
     private String defaultValue;
+    
+    /**
+     * cookie
+     */
+    private String cookie;
+    
+    /**
+     * 请求参数
+     */
+    private Map<String, String> paramMap;
     
 	public String getName() {
 		return name;
@@ -123,11 +118,11 @@ public class AggregationResource implements Comparable<AggregationResource>, Ser
 		this.resourceUrl = resourceUrl;
 	}
 
-	public String getResourceMethod() {
+	public Integer getResourceMethod() {
 		return resourceMethod;
 	}
 
-	public void setResourceMethod(String resourceMethod) {
+	public void setResourceMethod(Integer resourceMethod) {
 		this.resourceMethod = resourceMethod;
 	}
 
@@ -137,22 +132,6 @@ public class AggregationResource implements Comparable<AggregationResource>, Ser
 
 	public void setIsLogin(Boolean isLogin) {
 		this.isLogin = isLogin;
-	}
-
-	public String getCookie() {
-		return cookie;
-	}
-
-	public void setCookie(String cookie) {
-		this.cookie = cookie;
-	}
-
-	public Map<String, String> getParamMap() {
-		return paramMap;
-	}
-
-	public void setParamMap(Map<String, String> paramMap) {
-		this.paramMap = paramMap;
 	}
 
 	public Integer getTimeOut() {
@@ -179,28 +158,20 @@ public class AggregationResource implements Comparable<AggregationResource>, Ser
 		this.cacheTime = cacheTime;
 	}
 
-	public String getResourceTemplate() {
-		return resourceTemplate;
+	public String getResultTemplate() {
+		return resultTemplate;
 	}
 
-	public void setResourceTemplate(String resourceTemplate) {
-		this.resourceTemplate = resourceTemplate;
+	public void setResultTemplate(String resultTemplate) {
+		this.resultTemplate = resultTemplate;
 	}
 
-	public String getResourceRegex() {
-		return resourceRegex;
+	public String getParamTemplate() {
+		return paramTemplate;
 	}
 
-	public void setResourceRegex(String resourceRegex) {
-		this.resourceRegex = resourceRegex;
-	}
-
-	public String getResourceBranchs() {
-		return resourceBranchs;
-	}
-
-	public void setResourceBranchs(String resourceBranchs) {
-		this.resourceBranchs = resourceBranchs;
+	public void setParamTemplate(String paramTemplate) {
+		this.paramTemplate = paramTemplate;
 	}
 
 	public String getDefaultValue() {
@@ -210,7 +181,23 @@ public class AggregationResource implements Comparable<AggregationResource>, Ser
 	public void setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
 	}
-	
+
+	public String getCookie() {
+		return cookie;
+	}
+
+	public void setCookie(String cookie) {
+		this.cookie = cookie;
+	}
+
+	public Map<String, String> getParamMap() {
+		return paramMap;
+	}
+
+	public void setParamMap(Map<String, String> paramMap) {
+		this.paramMap = paramMap;
+	}
+
 	@Override
 	public int hashCode() {
 		return super.hashCode();
@@ -225,7 +212,7 @@ public class AggregationResource implements Comparable<AggregationResource>, Ser
      * 根据序号排序 （从小到大）
      */
     @Override
-    public int compareTo(AggregationResource resourceInfo) {
+    public int compareTo(ResourceInfo resourceInfo) {
         return this.getResourceIndex().compareTo(resourceInfo.getResourceIndex());
     }
 

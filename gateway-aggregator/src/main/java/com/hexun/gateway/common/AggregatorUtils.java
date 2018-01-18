@@ -5,13 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.hexun.common.http.RequestPackage;
 import com.hexun.common.http.ResponsePackage;
 import com.hexun.common.utils.JsonUtils;
-import com.hexun.gateway.pojo.AggregationResource;
+import com.hexun.gateway.pojo.ResourceInfo;
 import com.hexun.hwcommon.model.CommonLoginInfo;
 
 import io.netty.buffer.Unpooled;
@@ -31,9 +32,9 @@ import io.netty.util.CharsetUtil;
  * @author xiongyan
  * @date 2018年1月17日 下午3:09:30
  */
-public class AggregationUtils {
+public class AggregatorUtils {
 
-	private AggregationUtils() {
+	private AggregatorUtils() {
 		
 	}
 	
@@ -44,8 +45,8 @@ public class AggregationUtils {
 	 * @return
 	 */
 	public static Map<String, String> getParamMap(String uri) {
-		Map<String, String> paramMap = new HashMap<>();
 		QueryStringDecoder decoder = new QueryStringDecoder(uri);
+		Map<String, String> paramMap = new HashMap<>(decoder.parameters().size());
 		decoder.parameters().entrySet().forEach(entry -> paramMap.put(entry.getKey(), entry.getValue().get(0)));
 		return paramMap;
 	}
@@ -57,15 +58,15 @@ public class AggregationUtils {
 	 * @param resources
 	 * @return
 	 */
-	public static List<AggregationResource> getAggregationResource(HttpRequest request, List<AggregationResource> resources) {
+	public static List<ResourceInfo> listResourceInfo(HttpRequest request, List<ResourceInfo> resources) {
 		// 获取请求参数
 		Map<String, String> paramMap = getParamMap(request.uri());
 
 		// 聚合资源集合
-		List<AggregationResource> resourceList = new ArrayList<>();
-		for (AggregationResource resource : resources) {
+		List<ResourceInfo> resourceList = new ArrayList<>();
+		for (ResourceInfo resource : resources) {
 			// 克隆
-			AggregationResource resourceInfo = SerializationUtils.clone(resource);
+			ResourceInfo resourceInfo = SerializationUtils.clone(resource);
 			resourceList.add(resourceInfo);
 			if (resourceInfo.getIsLogin()) {
 				String cookie = request.headers().get("Cookie");
@@ -95,7 +96,7 @@ public class AggregationUtils {
 	 * @return
 	 */
 	public static String getUserId(String cookie) {
-		Map<String, String> map = new HashMap<>();
+		Map<String, String> map = new HashMap<>(1);
 		map.put("cookie", cookie);
 		ResponsePackage response = RequestPackage.get(Constant.LOGINURL).setHeaders(map).getResponse();
 		if (null == response || !response.isSuccess()) {
@@ -117,10 +118,10 @@ public class AggregationUtils {
 	 * @return
 	 */
 	public static String replace(String url, Map<String, String> paramMap) {
-		if (null == paramMap || paramMap.isEmpty()) {
+		if (MapUtils.isEmpty(paramMap)) {
 			return url;
 		}
-		if (url.indexOf('{') < 0 || url.indexOf('}') < 0) {
+		if (!url.contains("{") && !url.contains("}")) {
 			return url;
 		}
 		// 正则替换{}内容

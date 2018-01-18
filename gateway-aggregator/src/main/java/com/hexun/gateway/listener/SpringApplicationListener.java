@@ -27,7 +27,7 @@ public class SpringApplicationListener {
 	public void init() {
 		ZookeeperEventListener listener = new ZookeeperEventListener();
 		// 获取聚合配置信息
-		listener.reloadAggregationInfo();
+		listener.reloadAggregatorInfo();
 		
 		// 聚合配置信息发生变化通知客户端重新加载数据
 		String basePath = "/";
