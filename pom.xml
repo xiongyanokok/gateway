@@ -35,8 +35,10 @@
 			<properties>
 				<disconf.env>dev</disconf.env>
 				<disconf.addr>disconf.intcoop.hexun.com</disconf.addr>
-				<disconf.download.dir>c:/disconf/download/zuul</disconf.download.dir>
-				<disconf.app>caidao_hexun_com</disconf.app>
+				<disconf.download.dir>c:/disconf/download/gateway</disconf.download.dir>
+				<disconf.app>gateway_hexun_com</disconf.app>
+				<cat.aggregator>aggregator-test</cat.aggregator>
+				<cat.gateway>gateway-test</cat.gateway>
 			</properties>
 		</profile>
 		<profile>
@@ -44,8 +46,10 @@
 			<properties>
 				<disconf.env>test</disconf.env>
 				<disconf.addr>disconf.intcoop.hexun.com</disconf.addr>
-				<disconf.download.dir>/usr/local/tomcat/disconf/download/zuul</disconf.download.dir>
-				<disconf.app>caidao_hexun_com</disconf.app>
+				<disconf.download.dir>/usr/local/tomcat/disconf/download/gateway</disconf.download.dir>
+				<disconf.app>gateway_hexun_com</disconf.app>
+				<cat.aggregator>aggregator-test</cat.aggregator>
+				<cat.gateway>gateway-test</cat.gateway>
 			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
@@ -56,8 +60,10 @@
 			<properties>
 				<disconf.env>product</disconf.env>
 				<disconf.addr>disconf.intcoop.hexun.com</disconf.addr>
-				<disconf.download.dir>/usr/local/tomcat/disconf/download/zuul</disconf.download.dir>
-				<disconf.app>caidao_hexun_com</disconf.app>
+				<disconf.download.dir>/usr/local/tomcat/disconf/download/gateway</disconf.download.dir>
+				<disconf.app>gateway_hexun_com</disconf.app>
+				<cat.aggregator>aggregator-product</cat.aggregator>
+				<cat.gateway>gateway-product</cat.gateway>
 			</properties>
 		</profile>
 	</profiles>
@@ -114,6 +120,13 @@
 			    <groupId>org.apache.commons</groupId>
 			    <artifactId>commons-collections4</artifactId>
 			    <version>4.1</version> 
+			</dependency>
+			
+			<!-- cat -->
+			<dependency>
+				<groupId>com.hexun</groupId>
+				<artifactId>cat-plugins</artifactId>
+				<version>1.1.0</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

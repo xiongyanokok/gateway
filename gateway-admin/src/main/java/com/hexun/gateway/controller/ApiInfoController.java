@@ -177,8 +177,8 @@ public class ApiInfoController extends BaseController {
 	@RequestMapping(value = "/refresh", method = { RequestMethod.POST })
 	@ResponseBody
 	public Map<String, Object> refresh() {
-		registryCenter.update("/", DateUtils.now());
-		return buildSuccess("删除成功");
+		registryCenter.update("/api", DateUtils.now());
+		return buildSuccess("刷新成功");
 	}
 	
 }

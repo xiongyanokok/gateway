@@ -7,14 +7,19 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.dianping.cat.Cat;
+import com.dianping.cat.CatConstants;
+import com.dianping.cat.message.Message;
+import com.dianping.cat.message.Transaction;
 import com.hexun.gateway.aggregator.AggregatorRequest;
 import com.hexun.gateway.common.AggregatorCache;
 import com.hexun.gateway.common.AggregatorUtils;
 import com.hexun.gateway.common.Constant;
+import com.hexun.gateway.disconf.AggregatorDisconf;
 import com.hexun.gateway.enums.AggregatorTypeEnum;
+import com.hexun.gateway.exception.GatewayException;
 import com.hexun.gateway.pojo.AggregatorInfo;
 import com.hexun.gateway.pojo.ResourceInfo;
 import com.hexun.gateway.pojo.Result;
@@ -40,12 +45,6 @@ public class HttpServerInboundHandler extends SimpleChannelInboundHandler<HttpRe
 	private static final Logger logger = LoggerFactory.getLogger(HttpServerInboundHandler.class);
 
 	/**
-	 * 客户端
-	 */
-	@Value("${aggregator.request}")
-	private String key;
-
-	/**
 	 * 聚合请求
 	 */
 	@Autowired
@@ -62,6 +61,8 @@ public class HttpServerInboundHandler extends SimpleChannelInboundHandler<HttpRe
 	public void channelRead0(ChannelHandlerContext ctx, HttpRequest request) throws Exception {
 		String result = Result.NORESOURCE.toString();
 		String uri = request.uri();
+		System.out.println(uri);
+		Transaction t = Cat.newTransaction(CatConstants.TYPE_URL, uri);
 		try {
 			// apigw前缀
 			if (!uri.startsWith(Constant.PREFIX)) {
@@ -83,16 +84,27 @@ public class HttpServerInboundHandler extends SimpleChannelInboundHandler<HttpRe
 			List<ResourceInfo> resources = AggregatorUtils.listResourceInfo(request, aggregatorInfo.getResourceInfos());
 
 			// 获取客户端
-			AggregatorRequest<?> aggregatorRequest = aggregatorRequestMap.get(key);
+			AggregatorRequest<?> aggregatorRequest = aggregatorRequestMap.get(AggregatorDisconf.getRequestClient());
+			if (null == aggregatorRequest) {
+				throw new GatewayException("聚合请求客户端【"+ AggregatorDisconf.getRequestClient() + "】不存在");
+			}
+			
+			// 执行
 			if (AggregatorTypeEnum.PARALLEL.getValue().equals(aggregatorInfo.getType())) {
 				result = aggregatorRequest.parallel(resources);
 			} else {
 				result = aggregatorRequest.serial(resources);
 			}
+			// 成功
+			t.setStatus(Message.SUCCESS);
 		} catch (Exception e) {
+			// 失败
+			t.setStatus(e);
 			result = Result.SYSTEMERROR.toString();
 			logger.error("【{}】聚合失败:", uri, e);
 		} finally {
+			// 完成
+			t.complete();
 			if (uri.contains(Constant.CALLBACK)) {
 				String callback = AggregatorUtils.getParamMap(uri).get(Constant.CALLBACK);
 				result = callback + "(" + result + ");";

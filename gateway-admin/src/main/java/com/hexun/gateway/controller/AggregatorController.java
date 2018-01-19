@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.hexun.common.utils.DateUtils;
 import com.hexun.gateway.common.Assert;
 import com.hexun.gateway.enums.TrueFalseStatusEnum;
 import com.hexun.gateway.model.Aggregator;
 import com.hexun.gateway.service.AggregatorService;
+import com.hexun.gateway.zookeeper.RegistryCenter;
 
 /**
  * Controller
@@ -34,6 +36,9 @@ public class AggregatorController extends BaseController {
 
     @Autowired
 	private AggregatorService aggregatorService;
+    
+    @Autowired
+	private RegistryCenter registryCenter; 
 	
 	/**
 	 * 进入列表页面
@@ -141,6 +146,18 @@ public class AggregatorController extends BaseController {
 		aggregatorService.remove(aggregator);
 		logger.info("【{}】删除成功", aggregator);
 		return buildSuccess("删除成功");
+	}
+	
+	/**
+	 * 刷新数据
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/refresh", method = { RequestMethod.POST })
+	@ResponseBody
+	public Map<String, Object> refresh() {
+		registryCenter.update("/aggregator", DateUtils.now());
+		return buildSuccess("刷新成功");
 	}
 	
 }
