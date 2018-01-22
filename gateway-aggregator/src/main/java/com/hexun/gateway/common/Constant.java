@@ -8,6 +8,10 @@ package com.hexun.gateway.common;
  */
 public final class Constant extends BaseConstant {
 	
+	/**
+	 * favicon.ico
+	 */
+	public static final String FAVICON = "/favicon.ico";
 	
 	/**
 	 * 前缀

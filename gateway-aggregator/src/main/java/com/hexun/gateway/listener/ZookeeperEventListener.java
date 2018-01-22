@@ -15,6 +15,7 @@ import com.hexun.common.http.RequestPackage;
 import com.hexun.common.http.ResponsePackage;
 import com.hexun.common.utils.JsonUtils;
 import com.hexun.gateway.common.AggregatorCache;
+import com.hexun.gateway.disconf.CommonDisconf;
 import com.hexun.gateway.enums.ErrorCodeEnum;
 import com.hexun.gateway.exception.GatewayException;
 import com.hexun.gateway.pojo.AggregatorInfo;
@@ -90,7 +91,7 @@ public class ZookeeperEventListener implements TreeCacheListener {
 	private String getAggregatorInfo() {
         int times = 0;
         while (times < retryTimes) {
-        	ResponsePackage response = RequestPackage.get("http://localhost:8080/aggregator").getResponse();
+        	ResponsePackage response = RequestPackage.get(CommonDisconf.getAggregatorUrl()).getResponse();
 			if (null == response || !response.isSuccess()) {
 				times++;
 				sleep();

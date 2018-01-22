@@ -3,12 +3,14 @@ package com.hexun.gateway.netty;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -29,7 +31,15 @@ import io.netty.util.concurrent.DefaultThreadFactory;
  */
 @Component
 public class HttpServer {
+	
+	/**
+	 * logger
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
 
+	/**
+	 * 服务端处理器
+	 */
 	@Autowired
 	private HttpServerInboundHandler httpServerInboundHandler;
 
@@ -42,6 +52,11 @@ public class HttpServer {
 	 * 工作线程池
 	 */
 	private EventLoopGroup workerGroup;
+	
+	/**
+	 * Channel
+	 */
+	private Channel channel;
 
 	/**
 	 * 端口号
@@ -80,8 +95,8 @@ public class HttpServer {
 				ch.pipeline().addLast("server-handler", httpServerInboundHandler);
 			}
 		});
-		ChannelFuture f = b.bind(port).sync();
-		f.channel().closeFuture().sync();
+		channel = b.bind(port).sync().channel();
+		logger.info("netty server start success");
 	}
 
 	/**
@@ -96,6 +111,10 @@ public class HttpServer {
 		if (null != bossGroup) {
 			bossGroup.shutdownGracefully();
 			bossGroup = null;
+		}
+		if (null != channel) {
+			channel.closeFuture().syncUninterruptibly();
+			channel = null;
 		}
 	}
 	

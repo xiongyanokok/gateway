@@ -16,8 +16,9 @@ import com.dianping.cat.message.Transaction;
 import com.hexun.gateway.aggregator.AggregatorRequest;
 import com.hexun.gateway.common.AggregatorCache;
 import com.hexun.gateway.common.AggregatorUtils;
+import com.hexun.gateway.common.CatUtils;
 import com.hexun.gateway.common.Constant;
-import com.hexun.gateway.disconf.AggregatorDisconf;
+import com.hexun.gateway.disconf.CommonDisconf;
 import com.hexun.gateway.enums.AggregatorTypeEnum;
 import com.hexun.gateway.exception.GatewayException;
 import com.hexun.gateway.pojo.AggregatorInfo;
@@ -61,8 +62,12 @@ public class HttpServerInboundHandler extends SimpleChannelInboundHandler<HttpRe
 	public void channelRead0(ChannelHandlerContext ctx, HttpRequest request) throws Exception {
 		String result = Result.NORESOURCE.toString();
 		String uri = request.uri();
-		System.out.println(uri);
+		if (Constant.FAVICON.equals(uri)) {
+			return;
+		}
+		
 		Transaction t = Cat.newTransaction(CatConstants.TYPE_URL, uri);
+		CatUtils.catLog(ctx, request);
 		try {
 			// apigw前缀
 			if (!uri.startsWith(Constant.PREFIX)) {
@@ -84,9 +89,9 @@ public class HttpServerInboundHandler extends SimpleChannelInboundHandler<HttpRe
 			List<ResourceInfo> resources = AggregatorUtils.listResourceInfo(request, aggregatorInfo.getResourceInfos());
 
 			// 获取客户端
-			AggregatorRequest<?> aggregatorRequest = aggregatorRequestMap.get(AggregatorDisconf.getRequestClient());
+			AggregatorRequest<?> aggregatorRequest = aggregatorRequestMap.get(CommonDisconf.getRequestClient());
 			if (null == aggregatorRequest) {
-				throw new GatewayException("聚合请求客户端【"+ AggregatorDisconf.getRequestClient() + "】不存在");
+				throw new GatewayException("聚合请求客户端【"+ CommonDisconf.getRequestClient() + "】不存在");
 			}
 			
 			// 执行
@@ -112,5 +117,5 @@ public class HttpServerInboundHandler extends SimpleChannelInboundHandler<HttpRe
 			AggregatorUtils.writeAndFlush(ctx, result);
 		}
 	}
-
+	
 }
