@@ -19,9 +19,6 @@
 			<resource>
 				<directory>../gateway-common/src/main/resources</directory>
 				<filtering>true</filtering>
-				<excludes>
-					<exclude>spring/applicationContext-disconf.xml</exclude>
-				</excludes>
 			</resource>
 		</resources>
 

@@ -11,8 +11,8 @@ import org.springframework.context.annotation.ImportResource;
  * @author xiongyan
  * @date 2017年12月17日 上午11:01:57
  */
-@ServletComponentScan
 @SpringBootApplication
+@ServletComponentScan("com.hexun")
 @ImportResource("classpath:/spring/applicationContext-*.xml")
 public class Application {
 	

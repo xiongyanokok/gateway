@@ -12,6 +12,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.hexun.common.security.XSSRequestWrapper;
 import com.hexun.gateway.common.RequestContext;
 import com.hexun.hwcommon.model.CommonLoginInfo;
 import com.hexun.hwcommon.service.UserAuth;
@@ -42,7 +43,7 @@ public class LoginFilter implements Filter {
 			return;
 		}
 		RequestContext.getCurrentContext().setCommonLoginInfo(commonLoginInfo);
-        chain.doFilter(request, response);
+        chain.doFilter(new XSSRequestWrapper(servletRequest), response);
 	}
 
 	@Override
