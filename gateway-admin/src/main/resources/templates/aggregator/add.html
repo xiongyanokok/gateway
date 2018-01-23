@@ -11,33 +11,39 @@
 <link rel="stylesheet" type="text/css" th:href="@{/lib/Hui-iconfont/1.0.8/iconfont.css}" />
 <link rel="stylesheet" type="text/css" th:href="@{/static/h-ui.admin/skin/default/skin.css}" id="skin" />
 <link rel="stylesheet" type="text/css" th:href="@{/static/h-ui.admin/css/style.css}" />
-<title>添加xx</title>
+<title>添加聚合</title>
 </head>
 <body>
 	<article class="page-container">
 		<form id="form" action="/admin/aggregator/save" method="post" class="form form-horizontal">
 			<div class="row cl">
-				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>name：</label>
+				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span> 聚合名称：</label>
 				<div class="formControls col-xs-8 col-sm-8">
-					<input type="text" class="input-text" id="name" name="name" placeholder="name" />
+					<input type="text" class="input-text" id="name" name="name" placeholder="聚合名称" maxlength="50" />
 				</div>
 			</div>
 			<div class="row cl">
-				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>uri：</label>
+				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span> 聚合接口地址：</label>
 				<div class="formControls col-xs-8 col-sm-8">
-					<input type="text" class="input-text" id="uri" name="uri" placeholder="uri" />
+					<input type="text" class="input-text" id="uri" name="uri" placeholder="聚合接口地址" maxlength="200" />
 				</div>
 			</div>
 			<div class="row cl">
-				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>type：</label>
+				<label class="form-label col-xs-4 col-sm-3">聚合类型：</label>
 				<div class="formControls col-xs-8 col-sm-8">
-					<input type="text" class="input-text" id="type" name="type" placeholder="type" />
+					<span class="select-box">
+						<select id="type" name="type" class="select">
+							<option value="1" selected="selected">并行</option>
+							<option value="2">串行</option>
+						</select>
+					</span>
 				</div>
 			</div>
 			<div class="row cl">
-				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>desc：</label>
+				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span> 聚合描述：</label>
 				<div class="formControls col-xs-8 col-sm-8">
-					<input type="text" class="input-text" id="desc" name="desc" placeholder="desc" />
+					<textarea class="textarea" id="description" name="description" placeholder="聚合描述" maxlength="200"></textarea>
+					<p class="textarea-numberbar"><em class="textarea-length">0</em>/200</p>
 				</div>
 			</div>
 			
@@ -68,6 +74,15 @@
 		$("#form").validate({
 			rules:{
 				name:{
+					required:true
+				},
+				uri:{
+					required:true
+				},
+				type:{
+					required:true
+				},
+				description:{
 					required:true
 				}
 			},

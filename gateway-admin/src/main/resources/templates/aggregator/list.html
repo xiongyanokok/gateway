@@ -11,24 +11,29 @@
 <link rel="stylesheet" type="text/css" th:href="@{/lib/Hui-iconfont/1.0.8/iconfont.css}" />
 <link rel="stylesheet" type="text/css" th:href="@{/static/h-ui.admin/skin/default/skin.css}" id="skin" />
 <link rel="stylesheet" type="text/css" th:href="@{/static/h-ui.admin/css/style.css}" />
-<title>xx管理</title>
+<title>聚合管理</title>
 </head>
 <body>
-	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> xx管理 <span class="c-gray en">&gt;</span> xx列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 聚合管理 <span class="c-gray en">&gt;</span> 聚合列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 	<div class="pd-20">
 		<div class="text-l">
-			条件A：<input type="text" class="input-text" style="width: 15%;" id="" name="" />
+			聚合名称：<input type="text" class="input-text" style="width: 15%;" id="name" name="name" />
 			<span style="padding-right: 5%;"></span>
-			条件B：<input type="text" class="input-text" style="width: 15%;" id="" name="" />
-			<span style="padding-right: 5%;"></span>
-			条件C：<input type="text" class="input-text" style="width: 15%;" id="" name="" />
+			聚合类型：
+			<span class="select-box inline" style="width: 15%;">
+				<select id="type" name="type" class="select" onchange="query()" style="width: 100%;">
+					<option value="">全部类型</option>
+					<option value="1">并行</option>
+					<option value="2">串行</option>
+				</select>
+			</span>
 		</div>
 		<div class="cl pd-5 bg-1 bk-gray mt-20">
     		<span class="l">
-    			<span onclick="add()" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加xx </span>
+    			<span onclick="add()" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加聚合 </span>
     		</span>
     		<span class="r">
-    			<span onclick="query()" class="btn btn-success radius"><i class="Hui-iconfont">&#xe665;</i> 查询xx </span>
+    			<span onclick="query()" class="btn btn-success radius"><i class="Hui-iconfont">&#xe665;</i> 查询聚合 </span>
     		</span>
   		</div>
   		<table id="table" class="table table-border table-bordered table-striped table-hover table-bg"/>
@@ -47,6 +52,14 @@
 <script type="text/javascript" th:src="@{/lib/datatables/1.10.0/jquery.dataTables.min.js}"></script> 
 <script type="text/javascript" th:src="@{/lib/laypage/1.2/laypage.js}"></script>
 <script th:inline="javascript">
+	$(function(){
+		$("body").keydown(function(event) {
+	        if (event.keyCode == "13") {
+	        	query();
+	        }
+	    });
+	});
+
 	var dataTable;
 	$(function(){
 		dataTable = $("#table").dataTable( {
@@ -57,7 +70,7 @@
 			"bProcessing" : true, // 加载层
 	        "bServerSide" : true, // 服务器获取数据
 	        "iDisplayLength": page_size, // 每页显示条数
-	        "aaSorting" : [ 0, "desc" ], //默认第几个排序
+	        "aaSorting" : [ 5, "desc" ], //默认第几个排序
 			"sAjaxSource" : "/admin/aggregator/query",
 			"fnServerData" : retrieveData,
 			"fnDrawCallback" : function(){
@@ -73,37 +86,45 @@
 				    "sWidth" : "1%"
 				}, {
                 	"mData" : "name",
-               		"sTitle" : "name",
+               		"sTitle" : "聚合名称",
 	                "bSortable": true,
-				    "sWidth" : "5%"
+				    "sWidth" : "4%"
             	}, {
                 	"mData" : "uri",
-               		"sTitle" : "uri",
+               		"sTitle" : "聚合接口地址",
 	                "bSortable": true,
-				    "sWidth" : "5%"
+				    "sWidth" : "8%"
             	}, {
                 	"mData" : "type",
-               		"sTitle" : "type",
+               		"sTitle" : "聚合类型",
 	                "bSortable": true,
-				    "sWidth" : "5%"
+				    "sWidth" : "2%",
+	                "mRender": function(data, type, full) {
+	                	if (data == 1) {
+	                		return "<span class=\"label label-secondary radius\">并行</span>";
+	                	} else {
+	                		return "<span class=\"label label-success radius\">串行</span>";
+	                	}
+	                }
             	}, {
-                	"mData" : "desc",
-               		"sTitle" : "desc",
+                	"mData" : "description",
+               		"sTitle" : "聚合描述",
 	                "bSortable": true,
-				    "sWidth" : "5%"
+				    "sWidth" : "8%"
             	}, {
 	                "mData" : "createTime",
 	                "sTitle" : "创建时间",
 	                "bSortable": true,
-	                "sWidth" : "8%"
+	                "sWidth" : "4%"
 	            }, {
 	            	"mData" : null,
 	            	"sTitle" : "操作",
 	            	"bSortable" : false,
-	            	"sWidth" : "10%",
+	            	"sWidth" : "3%",
 	            	"mRender": function(data, type, full) {
 	            		var button = "<span class=\"btn btn-success radius size-MINI\" onclick=\"edit("+data.id+")\">修改</span>"+
-	            			" <span class=\"btn btn-danger radius size-MINI\" onclick=\"del("+data.id+")\">删除</span>";
+	            			" <span class=\"btn btn-danger radius size-MINI\" onclick=\"del("+data.id+")\">删除</span>"+
+	            			" <span class=\"btn btn-primary radius size-MINI\" onclick=\"resource("+data.id+")\">资源</span>";
 	            		return button;
 	            	}
 	            }
@@ -153,6 +174,9 @@
 			if ($("#name").val()) {
 				data.name = $("#name").val();
 			}
+			if ($("#type").val()) {
+				data.type = $("#type").val();
+			}
 			
 			$.ajax({
 				url : url,
@@ -172,12 +196,22 @@
 	
 	// 新增数据
 	function add() {
-		layer_show("添加xx", "/admin/aggregator/add", "", "550");
+		layer_show("添加聚合", "/admin/aggregator/add", "", "500");
 	}
 	
 	// 修改数据
 	function edit(id) {
-		layer_show("修改xx", "/admin/aggregator/edit?id="+id, "", "550");
+		layer_show("修改聚合", "/admin/aggregator/edit?id="+id, "", "500");
+	}
+	
+	// 资源列表
+	function resource(id) {
+		var index = layer.open({
+			type: 2,
+			title: "资源列表",
+			content: "/admin/aggregatorresource/list?aggregatorId="+id
+		});
+		layer.full(index);
 	}
 	
 	// 查询数据

@@ -285,10 +285,10 @@
     			and resource_index = #{resourceIndex}
   			</if>
   			<if test="resourceName != null">
-    			and resource_name = #{resourceName}
+    			and resource_name like CONCAT('%', #{resourceName}, '%')
   			</if>
   			<if test="resourceUrl != null">
-    			and resource_url = #{resourceUrl}
+    			and resource_url like CONCAT('%', #{resourceUrl}, '%')
   			</if>
   			<if test="resourceMethod != null">
     			and resource_method = #{resourceMethod}

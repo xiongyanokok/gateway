@@ -61,6 +61,8 @@ public class AggregatorController extends BaseController {
 	public Map<String, Object> query() {
 		return pageInfoResult(map -> {
 			// 查询条件
+			map.put("name", request.getParameter("name"));
+			map.put("type", request.getParameter("type"));
 			return aggregatorService.listAggregator(map);
 		});
 	}

@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hexun.gateway.common.Assert;
 import com.hexun.gateway.enums.TrueFalseStatusEnum;
+import com.hexun.gateway.model.Aggregator;
 import com.hexun.gateway.model.AggregatorResource;
 import com.hexun.gateway.service.AggregatorResourceService;
+import com.hexun.gateway.service.AggregatorService;
 
 /**
  * Controller
@@ -34,6 +36,9 @@ public class AggregatorResourceController extends BaseController {
 
     @Autowired
 	private AggregatorResourceService aggregatorResourceService;
+    
+    @Autowired
+    private AggregatorService aggregatorService;
 	
 	/**
 	 * 进入列表页面
@@ -42,7 +47,9 @@ public class AggregatorResourceController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/list", method = { RequestMethod.GET })
-	public String list(Model model) {
+	public String list(Model model, Integer aggregatorId) {
+		Assert.notNull(aggregatorId, "aggregatorId为空");
+		model.addAttribute("aggregatorId", aggregatorId);
 		return "aggregatorresource/list";
 	}
 	
@@ -56,6 +63,9 @@ public class AggregatorResourceController extends BaseController {
 	public Map<String, Object> query() {
 		return pageInfoResult(map -> {
 			// 查询条件
+			map.put("aggregatorId", request.getParameter("aggregatorId"));
+			map.put("resourceName", request.getParameter("resourceName"));
+			map.put("resourceUrl", request.getParameter("resourceUrl"));
 			return aggregatorResourceService.listAggregatorResource(map);
 		});
 	}
@@ -67,7 +77,12 @@ public class AggregatorResourceController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/add", method = { RequestMethod.GET })
-	public String add(Model model) {
+	public String add(Model model, Integer aggregatorId) {
+		Assert.notNull(aggregatorId, "aggregatorId为空");
+		Aggregator aggregator = aggregatorService.getAggregatorById(aggregatorId);
+		Assert.notNull(aggregator, "数据不存在");
+		model.addAttribute("aggregatorId", aggregatorId);
+		model.addAttribute("aggregatorType", aggregator.getType());
 		return "aggregatorresource/add";
 	}
 	
@@ -104,6 +119,10 @@ public class AggregatorResourceController extends BaseController {
 		AggregatorResource aggregatorResource = aggregatorResourceService.getAggregatorResourceById(id);
 		Assert.notNull(aggregatorResource, "数据不存在");
 		model.addAttribute("aggregatorResource", aggregatorResource);
+		
+		Aggregator aggregator = aggregatorService.getAggregatorById(aggregatorResource.getAggregatorId());
+		Assert.notNull(aggregator, "数据不存在");
+		model.addAttribute("aggregatorType", aggregator.getType());
 		return "aggregatorresource/edit";
 	}
 	

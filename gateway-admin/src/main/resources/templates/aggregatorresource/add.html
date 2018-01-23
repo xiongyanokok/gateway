@@ -11,81 +11,87 @@
 <link rel="stylesheet" type="text/css" th:href="@{/lib/Hui-iconfont/1.0.8/iconfont.css}" />
 <link rel="stylesheet" type="text/css" th:href="@{/static/h-ui.admin/skin/default/skin.css}" id="skin" />
 <link rel="stylesheet" type="text/css" th:href="@{/static/h-ui.admin/css/style.css}" />
-<title>添加xx</title>
+<title>添加资源</title>
 </head>
 <body>
 	<article class="page-container">
 		<form id="form" action="/admin/aggregatorresource/save" method="post" class="form form-horizontal">
-			<div class="row cl">
-				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>aggregatorId：</label>
+			<input type="hidden" class="input-text" id="aggregatorId" name="aggregatorId" th:value="${aggregatorId}" />
+			<div class="row cl" th:if="${aggregatorType == 2}">
+				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span> 资源序号：</label>
 				<div class="formControls col-xs-8 col-sm-8">
-					<input type="text" class="input-text" id="aggregatorId" name="aggregatorId" placeholder="aggregatorId" />
+					<input type="text" class="input-text" id="resourceIndex" name="resourceIndex" placeholder="资源序号：从1开始增长" maxlength="2" onkeyup="pureNumber(this)" onafterpaste="pureNumber(this)" />
 				</div>
 			</div>
 			<div class="row cl">
-				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>resourceIndex：</label>
+				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span> 资源名称：</label>
 				<div class="formControls col-xs-8 col-sm-8">
-					<input type="text" class="input-text" id="resourceIndex" name="resourceIndex" placeholder="resourceIndex" />
+					<input type="text" class="input-text" id="resourceName" name="resourceName" placeholder=" 资源名称" maxlength="20" />
 				</div>
 			</div>
 			<div class="row cl">
-				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>resourceName：</label>
+				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span> 资源请求地址：</label>
 				<div class="formControls col-xs-8 col-sm-8">
-					<input type="text" class="input-text" id="resourceName" name="resourceName" placeholder="resourceName" />
+					<input type="text" class="input-text" id="resourceUrl" name="resourceUrl" placeholder="资源请求地址：如需当前用户ID请使用{@}替换" maxlength="200" />
 				</div>
 			</div>
 			<div class="row cl">
-				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>resourceUrl：</label>
+				<label class="form-label col-xs-4 col-sm-3">请求方法：</label>
 				<div class="formControls col-xs-8 col-sm-8">
-					<input type="text" class="input-text" id="resourceUrl" name="resourceUrl" placeholder="resourceUrl" />
+					<span class="select-box">
+						<select id="resourceMethod" name="resourceMethod" class="select">
+							<option value="1" selected="selected">GET</option>
+							<option value="2">POST</option>
+						</select>
+					</span>
 				</div>
 			</div>
 			<div class="row cl">
-				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>resourceMethod：</label>
-				<div class="formControls col-xs-8 col-sm-8">
-					<input type="text" class="input-text" id="resourceMethod" name="resourceMethod" placeholder="resourceMethod" />
+				<label class="form-label col-xs-4 col-sm-3">是否登录：</label>
+				<div class="formControls col-xs-8 col-sm-2">
+					<span class="select-box">
+						<select id="isLogin" name="isLogin" class="select">
+							<option value="0" selected="selected">否</option>
+							<option value="1">是</option>
+						</select>
+					</span>
+				</div>
+				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span> 超时时间(秒)：</label>
+				<div class="formControls col-xs-8 col-sm-3">
+					<input type="text" class="input-text" id="timeOut" name="timeOut" placeholder="请求超时时间" value="1" maxlength="2" onkeyup="pureNumber(this)" onafterpaste="pureNumber(this)" />
 				</div>
 			</div>
 			<div class="row cl">
-				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>isLogin：</label>
-				<div class="formControls col-xs-8 col-sm-8">
-					<input type="text" class="input-text" id="isLogin" name="isLogin" placeholder="isLogin" />
+				<label class="form-label col-xs-4 col-sm-3">是否缓存：</label>
+				<div class="formControls col-xs-8 col-sm-2">
+					<span class="select-box">
+						<select id="isCache" name="isCache" class="select">
+							<option value="0" selected="selected">否</option>
+							<option value="1">是</option>
+						</select>
+					</span>
+				</div>
+				<label class="form-label col-xs-4 col-sm-3">缓存时间(分)：</label>
+				<div class="formControls col-xs-8 col-sm-3">
+					<input type="text" class="input-text" id="cacheTime" name="cacheTime" placeholder="缓存时间" maxlength="10" onkeyup="pureNumber(this)" onafterpaste="pureNumber(this)" />
 				</div>
 			</div>
 			<div class="row cl">
-				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>timeOut：</label>
+				<label class="form-label col-xs-4 col-sm-3">响应结果模板：</label>
 				<div class="formControls col-xs-8 col-sm-8">
-					<input type="text" class="input-text" id="timeOut" name="timeOut" placeholder="timeOut" />
+					<textarea style="height: 150px;" class="textarea" id="resultTemplate" name="resultTemplate" placeholder="响应结果模板" maxlength="60000"></textarea>
+				</div>
+			</div>
+			<div class="row cl" th:if="${aggregatorType == 2}">
+				<label class="form-label col-xs-4 col-sm-3">提取参数模板：</label>
+				<div class="formControls col-xs-8 col-sm-8">
+					<textarea style="height: 150px;" class="textarea" id="paramTemplate" name="paramTemplate" placeholder="提取参数模板" maxlength="60000"></textarea>
 				</div>
 			</div>
 			<div class="row cl">
-				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>isCache：</label>
+				<label class="form-label col-xs-4 col-sm-3">默认值：</label>
 				<div class="formControls col-xs-8 col-sm-8">
-					<input type="text" class="input-text" id="isCache" name="isCache" placeholder="isCache" />
-				</div>
-			</div>
-			<div class="row cl">
-				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>cacheTime：</label>
-				<div class="formControls col-xs-8 col-sm-8">
-					<input type="text" class="input-text" id="cacheTime" name="cacheTime" placeholder="cacheTime" />
-				</div>
-			</div>
-			<div class="row cl">
-				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>resultTemplate：</label>
-				<div class="formControls col-xs-8 col-sm-8">
-					<input type="text" class="input-text" id="resultTemplate" name="resultTemplate" placeholder="resultTemplate" />
-				</div>
-			</div>
-			<div class="row cl">
-				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>paramTemplate：</label>
-				<div class="formControls col-xs-8 col-sm-8">
-					<input type="text" class="input-text" id="paramTemplate" name="paramTemplate" placeholder="paramTemplate" />
-				</div>
-			</div>
-			<div class="row cl">
-				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>defaultValue：</label>
-				<div class="formControls col-xs-8 col-sm-8">
-					<input type="text" class="input-text" id="defaultValue" name="defaultValue" placeholder="defaultValue" />
+					<textarea class="textarea" id="defaultValue" name="defaultValue" placeholder="默认值" maxlength="500"></textarea>
 				</div>
 			</div>
 			
@@ -115,8 +121,25 @@
 	$(function(){
 		$("#form").validate({
 			rules:{
-				name:{
+				resourceIndex:{
+					min:1,					
+					required:function(){
+						return [[${aggregatorType}]] == 2;
+					}
+				},
+				resourceName:{
 					required:true
+				},
+				resourceUrl:{
+					required:true
+				},
+				timeOut:{
+					required:true
+				},
+				cacheTime:{
+					required:function(){
+						return $("#isCache").val() == 1;
+					}
 				}
 			},
 			onkeyup:false,
