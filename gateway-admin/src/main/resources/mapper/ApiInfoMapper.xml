@@ -269,7 +269,7 @@
     			and project_id = #{projectId}
   			</if>
   			<if test="uri != null">
-    			and uri = #{uri}
+    			and uri like CONCAT('%', #{uri}, '%')
   			</if>
   			<if test="enabled != null">
     			and enabled = #{enabled}

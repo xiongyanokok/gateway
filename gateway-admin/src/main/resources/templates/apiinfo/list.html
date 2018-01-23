@@ -17,13 +17,15 @@
 	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 网关管理 <span class="c-gray en">&gt;</span> 网关列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 	<div class="pd-20">
 		<div class="text-l">
-			项目：
+			所属项目：
 			<span class="select-box inline" style="width: 15%;">
 				<select id="projectId" name="projectId" class="select" onchange="query()" style="width: 100%;">
-					<option value="">全部产品</option>
+					<option value="">全部项目</option>
 					<option th:each="product : ${apiProjects}" th:value="${product.id }" th:text="${product.projectCn }"></option>
 				</select>
 			</span>
+			<span style="padding-right: 5%;"></span>
+			接口地址：<input type="text" class="input-text" style="width: 15%;" id="uri" name="uri" />
 		</div>
 		<div class="cl pd-5 bg-1 bk-gray mt-20">
     		<span class="l">
@@ -50,6 +52,14 @@
 <script type="text/javascript" th:src="@{/lib/datatables/1.10.0/jquery.dataTables.min.js}"></script> 
 <script type="text/javascript" th:src="@{/lib/laypage/1.2/laypage.js}"></script>
 <script th:inline="javascript">
+	$(function(){
+		$("body").keydown(function(event) {
+	        if (event.keyCode == "13") {
+	        	query();
+	        }
+	    });
+	});
+
 	var apiProjectsJson = JSON.parse([[${apiProjectsJson}]]);
 
 	var dataTable;
@@ -212,10 +222,8 @@
 	            	"bSortable" : false,
 	            	"sWidth" : "15%",
 	            	"mRender": function(data, type, full) {
-	            		var button = "<span class=\"btn btn-success radius size-MINI\" onclick=\"edit("+data.id+")\">修改</span>"+
-	            			" <span class=\"btn btn-danger radius size-MINI\" onclick=\"del("+data.id+")\">删除</span>"+
-	            			" <span class=\"btn btn-danger radius size-MINI\" onclick=\"ip("+data.id+")\">IP黑名单</span>"+
-	            			" <span class=\"btn btn-danger radius size-MINI\" onclick=\"user("+data.id+")\">用户黑名单</span>";
+	            		var button = "<span class=\"btn btn-success radius size-MINI\" onclick=\"edit("+data.id+")\">修改</span>";
+	            		button += " <span class=\"btn btn-danger radius size-MINI\" onclick=\"del("+data.id+")\">删除</span>";
 	            		if (full.sign) {
 	            			button += " <span class=\"btn btn-secondary radius size-MINI\" onclick=\"sign("+data.id+")\">鉴权</span>";
 	            		}
@@ -225,6 +233,8 @@
 	            		if (full.rateLimit) {
 	            			button += " <span class=\"btn btn-primary radius size-MINI\" onclick=\"rateLimit("+data.id+")\">限流</span>";
 	            		}
+	            		button += " <span class=\"btn btn-danger radius size-MINI\" onclick=\"ip("+data.id+")\">IP黑名单</span>";
+	            		button += " <span class=\"btn btn-danger radius size-MINI\" onclick=\"user("+data.id+")\">用户黑名单</span>";
 	            		return button;
 	            	}
 	            }
@@ -273,6 +283,9 @@
 			// 查询参数
 			if ($("#projectId").val()) {
 				data.projectId = $("#projectId").val();
+			}
+			if ($("#uri").val()) {
+				data.uri = $("#uri").val();
 			}
 			
 			$.ajax({

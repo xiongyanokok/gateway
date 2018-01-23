@@ -21,7 +21,7 @@
 				<div class="formControls col-xs-8 col-sm-8">
 					<span class="select-box inline" style="width: 100%;">
 						<select id="projectId" name="projectId" class="select" style="width: 100%;">
-							<option value="">全部产品</option>
+							<option value="">全部项目</option>
 							<option th:each="project : ${apiProjects}" th:value="${project.id }" th:text="${project.projectCn }"></option>
 						</select>
 					</span>

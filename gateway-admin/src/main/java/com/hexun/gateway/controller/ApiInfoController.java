@@ -74,6 +74,7 @@ public class ApiInfoController extends BaseController {
 		return pageInfoResult(map -> {
 			// 查询条件
 			map.put("projectId", request.getParameter("projectId"));
+			map.put("uri", request.getParameter("uri"));
 			return apiInfoService.listApiInfo(map);
 		});
 	}
