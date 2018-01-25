@@ -19,6 +19,7 @@ target/
 
 # temp ignore
 catalina.base_IS_UNDEFINED/
+disconf/
 logs/
 *.doc
 *.log
