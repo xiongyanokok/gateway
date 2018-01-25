@@ -43,6 +43,14 @@
 <script type="text/javascript" th:src="@{/lib/datatables/1.10.0/jquery.dataTables.min.js}"></script> 
 <script type="text/javascript" th:src="@{/lib/laypage/1.2/laypage.js}"></script>
 <script th:inline="javascript">
+	$(function(){
+		$("body").keydown(function(event) {
+	        if (event.keyCode == "13") {
+	        	query();
+	        }
+	    });
+	});
+
 	var dataTable;
 	$(function(){
 		dataTable = $("#table").dataTable( {
@@ -153,7 +161,12 @@
 	
 	// 新增数据
 	function add() {
-		layer_show("添加IP黑名单", "/admin/apiip/add?apiId="+[[${apiId}]], "", "400");
+		var url = "/admin/apiip/add";
+		var apiId = [[${apiId}]];
+		if (apiId) {
+			url += "?apiId="+apiId;
+		}
+		layer_show("添加IP黑名单", url, "", "400");
 	}
 	
 	// 修改数据

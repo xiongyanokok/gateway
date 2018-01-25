@@ -1,11 +1,16 @@
 package com.hexun.gateway.pojo;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * 限流信息
  * 
  * @author xiongyan
  * @date 2017年12月26日 下午3:39:24
  */
+@Getter
+@Setter
 public class RateLimitInfo {
 
 	/**
@@ -22,29 +27,5 @@ public class RateLimitInfo {
      * 刷新间隔(秒)
      */
 	private Long refreshInterval;
-
-	public Long getLimit() {
-		return limit;
-	}
-
-	public void setLimit(Long limit) {
-		this.limit = limit;
-	}
-
-	public Long getQuota() {
-		return quota;
-	}
-
-	public void setQuota(Long quota) {
-		this.quota = quota;
-	}
-
-	public Long getRefreshInterval() {
-		return refreshInterval;
-	}
-
-	public void setRefreshInterval(Long refreshInterval) {
-		this.refreshInterval = refreshInterval;
-	}
 
 }

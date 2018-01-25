@@ -1,11 +1,16 @@
 package com.hexun.gateway.pojo;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * 项目信息
  * 
  * @author xiongyan
  * @date 2017年12月26日 下午3:39:13
  */
+@Getter
+@Setter
 public class ProjectInfo {
 
 	/**
@@ -18,20 +23,4 @@ public class ProjectInfo {
 	 */
 	private String errorMessage;
 
-	public String getProjectName() {
-		return projectName;
-	}
-
-	public void setProjectName(String projectName) {
-		this.projectName = projectName;
-	}
-
-	public String getErrorMessage() {
-		return errorMessage;
-	}
-
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
-	}
-	
 }

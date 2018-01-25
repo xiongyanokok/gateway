@@ -1,11 +1,16 @@
 package com.hexun.gateway.pojo;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * 签名信息
  * 
  * @author xiongyan
  * @date 2017年12月26日 下午3:39:33
  */
+@Getter
+@Setter
 public class SignInfo {
 
 	/**
@@ -23,28 +28,4 @@ public class SignInfo {
 	 */
 	private String signKey;
 
-	public String getSignField() {
-		return signField;
-	}
-
-	public void setSignField(String signField) {
-		this.signField = signField;
-	}
-
-	public Integer getSignMethod() {
-		return signMethod;
-	}
-
-	public void setSignMethod(Integer signMethod) {
-		this.signMethod = signMethod;
-	}
-
-	public String getSignKey() {
-		return signKey;
-	}
-
-	public void setSignKey(String signKey) {
-		this.signKey = signKey;
-	}
-	
 }

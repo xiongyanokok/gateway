@@ -1,11 +1,16 @@
 package com.hexun.gateway.pojo;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * 响应结果
  * 
  * @author hexun
  * @date 2016年10月18日 下午3:16:45
  */
+@Getter
+@Setter
 public class Result {
 	
     /**
@@ -34,27 +39,10 @@ public class Result {
         this.msg = msg;
     }
 
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public Integer getCode() {
-        return code;
-    }
-
-    public void setCode(Integer code) {
-        this.code = code;
-    }
-    
     @Override
     public String toString() {
 		return "{\"code\":" + code + ", \"msg\":\"" + msg + "\"}";
     }
-
 
     public static final Result BUSYERROR = new Result(-1, "系统繁忙，请稍候重试");
     public static final Result SUCCESS = new Result(0, "成功");

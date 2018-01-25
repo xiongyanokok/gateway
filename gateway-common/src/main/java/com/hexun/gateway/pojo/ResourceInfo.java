@@ -3,12 +3,17 @@ package com.hexun.gateway.pojo;
 import java.io.Serializable;
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * model 实体类
  *
  * @author admin
  * @date 2017年05月13日 上午10:35:00
  */
+@Getter
+@Setter
 public class ResourceInfo implements Comparable<ResourceInfo>, Serializable {
 
     /**
@@ -86,128 +91,6 @@ public class ResourceInfo implements Comparable<ResourceInfo>, Serializable {
      */
     private Map<String, String> paramMap;
     
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Integer getResourceIndex() {
-		return resourceIndex;
-	}
-
-	public void setResourceIndex(Integer resourceIndex) {
-		this.resourceIndex = resourceIndex;
-	}
-
-	public String getResourceName() {
-		return resourceName;
-	}
-
-	public void setResourceName(String resourceName) {
-		this.resourceName = resourceName;
-	}
-
-	public String getResourceUrl() {
-		return resourceUrl;
-	}
-
-	public void setResourceUrl(String resourceUrl) {
-		this.resourceUrl = resourceUrl;
-	}
-
-	public Integer getResourceMethod() {
-		return resourceMethod;
-	}
-
-	public void setResourceMethod(Integer resourceMethod) {
-		this.resourceMethod = resourceMethod;
-	}
-
-	public Boolean getIsLogin() {
-		return isLogin;
-	}
-
-	public void setIsLogin(Boolean isLogin) {
-		this.isLogin = isLogin;
-	}
-
-	public Integer getTimeOut() {
-		return timeOut;
-	}
-
-	public void setTimeOut(Integer timeOut) {
-		this.timeOut = timeOut;
-	}
-
-	public Boolean getIsCache() {
-		return isCache;
-	}
-
-	public void setIsCache(Boolean isCache) {
-		this.isCache = isCache;
-	}
-
-	public Integer getCacheTime() {
-		return cacheTime;
-	}
-
-	public void setCacheTime(Integer cacheTime) {
-		this.cacheTime = cacheTime;
-	}
-
-	public String getResultTemplate() {
-		return resultTemplate;
-	}
-
-	public void setResultTemplate(String resultTemplate) {
-		this.resultTemplate = resultTemplate;
-	}
-
-	public String getParamTemplate() {
-		return paramTemplate;
-	}
-
-	public void setParamTemplate(String paramTemplate) {
-		this.paramTemplate = paramTemplate;
-	}
-
-	public String getDefaultValue() {
-		return defaultValue;
-	}
-
-	public void setDefaultValue(String defaultValue) {
-		this.defaultValue = defaultValue;
-	}
-
-	public String getCookie() {
-		return cookie;
-	}
-
-	public void setCookie(String cookie) {
-		this.cookie = cookie;
-	}
-
-	public Map<String, String> getParamMap() {
-		return paramMap;
-	}
-
-	public void setParamMap(Map<String, String> paramMap) {
-		this.paramMap = paramMap;
-	}
-
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		return super.equals(obj);
-	}
-
 	/**
      * 根据序号排序 （从小到大）
      */

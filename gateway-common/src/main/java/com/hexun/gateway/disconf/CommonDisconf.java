@@ -31,6 +31,7 @@ public class CommonDisconf {
 	 */
 	private static String gatewayUrl;
 
+	
 	@DisconfFileItem(name = "request.client")
 	public static String getRequestClient() {
 		return requestClient;

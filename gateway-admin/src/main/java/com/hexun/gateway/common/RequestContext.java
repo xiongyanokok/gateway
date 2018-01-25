@@ -2,6 +2,9 @@ package com.hexun.gateway.common;
 
 import com.hexun.hwcommon.model.CommonLoginInfo;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * RequestContext
  * 
@@ -24,6 +27,8 @@ public class RequestContext {
 	/**
 	 * 用户登陆信息
 	 */
+    @Getter
+    @Setter
 	private CommonLoginInfo commonLoginInfo;
 	
 	public static RequestContext getCurrentContext() {
@@ -34,12 +39,4 @@ public class RequestContext {
         LOCALCONTEXT.remove();
     }
 	
-	public CommonLoginInfo getCommonLoginInfo() {
-		return commonLoginInfo;
-	}
-
-	public void setCommonLoginInfo(CommonLoginInfo commonLoginInfo) {
-		this.commonLoginInfo = commonLoginInfo;
-	}
-
 }

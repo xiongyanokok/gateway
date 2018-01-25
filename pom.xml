@@ -19,7 +19,7 @@
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>1.5.9.RELEASE</version>
 	</parent>
-
+	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -40,6 +40,9 @@
 				<cat.aggregator>aggregator-test</cat.aggregator>
 				<cat.gateway>gateway-test</cat.gateway>
 			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 		</profile>
 		<profile>
 			<id>test</id>
@@ -51,9 +54,6 @@
 				<cat.aggregator>aggregator-test</cat.aggregator>
 				<cat.gateway>gateway-test</cat.gateway>
 			</properties>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
 		</profile>
 		<profile>
 			<id>product</id>
@@ -120,6 +120,14 @@
 			    <groupId>org.apache.commons</groupId>
 			    <artifactId>commons-collections4</artifactId>
 			    <version>4.1</version> 
+			</dependency>
+			
+			<!-- lombok -->
+			<dependency>
+			    <groupId>org.projectlombok</groupId>
+			    <artifactId>lombok</artifactId>
+			    <version>1.16.20</version>
+			    <scope>provided</scope>
 			</dependency>
 			
 			<!-- cat -->

@@ -67,9 +67,8 @@ public class AggregatorUtils {
 		for (ResourceInfo resource : resources) {
 			// 克隆
 			ResourceInfo resourceInfo = SerializationUtils.clone(resource);
-			resourceList.add(resourceInfo);
 			if (resourceInfo.getIsLogin()) {
-				String cookie = request.headers().get("Cookie");
+				String cookie = request.headers().get("Cookie");	
 				if (StringUtils.isEmpty(cookie)) {
 					continue;
 				}
@@ -85,6 +84,7 @@ public class AggregatorUtils {
 			if (StringUtils.isNotEmpty(url)) {
 				resourceInfo.setResourceUrl(url);
 			}
+			resourceList.add(resourceInfo);
 		}
 		return resourceList;
 	}
