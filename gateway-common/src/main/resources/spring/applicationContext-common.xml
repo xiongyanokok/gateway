@@ -10,13 +10,11 @@
 	<!-- spring thread pool executor -->           
     <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
         <!-- 线程池维护线程的最少数量 -->
-        <property name="corePoolSize" value="10" />
-        <!-- 允许的空闲时间 -->
-        <property name="keepAliveSeconds" value="10" />
+        <property name="corePoolSize" value="${core.pool.size}" />
         <!-- 线程池维护线程的最大数量 -->
-        <property name="maxPoolSize" value="100" />
-        <!-- 缓存队列 -->
-        <property name="queueCapacity" value="1000" />
+        <property name="maxPoolSize" value="${max.pool.size}" />
+        <!-- 线程池缓存队列容量 -->
+        <property name="queueCapacity" value="${queue.capacity}" />
         <!-- 对拒绝task的处理策略 -->
         <property name="rejectedExecutionHandler">
             <bean class="java.util.concurrent.ThreadPoolExecutor$CallerRunsPolicy" />
