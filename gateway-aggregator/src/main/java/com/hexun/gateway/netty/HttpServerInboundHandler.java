@@ -2,6 +2,7 @@ package com.hexun.gateway.netty;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import com.dianping.cat.Cat;
 import com.dianping.cat.CatConstants;
 import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
+import com.google.common.util.concurrent.RateLimiter;
 import com.hexun.gateway.aggregator.AggregatorRequest;
 import com.hexun.gateway.common.AggregatorCache;
 import com.hexun.gateway.common.AggregatorUtils;
@@ -50,6 +52,11 @@ public class HttpServerInboundHandler extends SimpleChannelInboundHandler<HttpRe
 	 */
 	@Autowired
 	private Map<String, AggregatorRequest<?>> aggregatorRequestMap;
+	
+	/**
+	 * 每秒钟发放1000个令牌
+	 */
+	private RateLimiter limiter = RateLimiter.create(1000);
 
 	/**
 	 * 接收消息
@@ -61,6 +68,14 @@ public class HttpServerInboundHandler extends SimpleChannelInboundHandler<HttpRe
 	@Override
 	public void channelRead0(ChannelHandlerContext ctx, HttpRequest request) throws Exception {
 		String result = Result.NORESOURCE.toString();
+		String requestClient = CommonDisconf.getRequestClient();
+		// 非netty客户端需要消费令牌
+		if (!requestClient.startsWith(Constant.NETTY) && !limiter.tryAcquire(1, TimeUnit.SECONDS)) {
+			// 等待1秒钟也无法取得令牌，直接返回失败
+			result = Result.BUSYERROR.toString();
+    		return;
+		}
+		
 		String uri = request.uri();
 		if (Constant.FAVICON.equals(uri)) {
 			return;
@@ -89,7 +104,7 @@ public class HttpServerInboundHandler extends SimpleChannelInboundHandler<HttpRe
 			List<ResourceInfo> resources = AggregatorUtils.listResourceInfo(request, aggregatorInfo.getResourceInfos());
 
 			// 获取客户端
-			AggregatorRequest<?> aggregatorRequest = aggregatorRequestMap.get(CommonDisconf.getRequestClient());
+			AggregatorRequest<?> aggregatorRequest = aggregatorRequestMap.get(requestClient);
 			if (null == aggregatorRequest) {
 				throw new GatewayException("聚合请求客户端【"+ CommonDisconf.getRequestClient() + "】不存在");
 			}

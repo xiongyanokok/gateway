@@ -9,6 +9,11 @@ package com.hexun.gateway.common;
 public final class Constant extends BaseConstant {
 	
 	/**
+	 * netty客户端
+	 */
+	public static final String NETTY = "netty";
+	
+	/**
 	 * favicon.ico
 	 */
 	public static final String FAVICON = "/favicon.ico";
