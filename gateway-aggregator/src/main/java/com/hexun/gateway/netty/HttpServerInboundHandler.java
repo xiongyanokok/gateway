@@ -68,16 +68,17 @@ public class HttpServerInboundHandler extends SimpleChannelInboundHandler<HttpRe
 	@Override
 	public void channelRead0(ChannelHandlerContext ctx, HttpRequest request) throws Exception {
 		String result = Result.NORESOURCE.toString();
+		String uri = request.uri();
+		if (Constant.FAVICON.equals(uri)) {
+			return;
+		}
+		
+		// 客户端
 		String requestClient = CommonDisconf.getRequestClient();
 		// 非netty客户端需要消费令牌
 		if (!requestClient.startsWith(Constant.NETTY) && !limiter.tryAcquire(1, TimeUnit.SECONDS)) {
 			// 等待1秒钟也无法取得令牌，直接返回失败
 			result = Result.BUSYERROR.toString();
-    		return;
-		}
-		
-		String uri = request.uri();
-		if (Constant.FAVICON.equals(uri)) {
 			return;
 		}
 		
