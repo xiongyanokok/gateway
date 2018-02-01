@@ -73,18 +73,18 @@ public class HttpServerInboundHandler extends SimpleChannelInboundHandler<HttpRe
 			return;
 		}
 		
-		// 客户端
-		String requestClient = CommonDisconf.getRequestClient();
-		// 非netty客户端需要消费令牌
-		if (!requestClient.startsWith(Constant.NETTY) && !limiter.tryAcquire(1, TimeUnit.SECONDS)) {
-			// 等待1秒钟也无法取得令牌，直接返回失败
-			result = Result.BUSYERROR.toString();
-			return;
-		}
-		
 		Transaction t = Cat.newTransaction(CatConstants.TYPE_URL, uri);
 		CatUtils.catLog(ctx, request);
 		try {
+			// 客户端
+			String requestClient = CommonDisconf.getRequestClient();
+			// 非netty客户端需要消费令牌
+			if (!requestClient.startsWith(Constant.NETTY) && !limiter.tryAcquire(1, TimeUnit.SECONDS)) {
+				// 等待1秒钟也无法取得令牌，直接返回失败
+				result = Result.BUSYERROR.toString();
+				return;
+			}
+			
 			// apigw前缀
 			if (!uri.startsWith(Constant.PREFIX)) {
 				return;

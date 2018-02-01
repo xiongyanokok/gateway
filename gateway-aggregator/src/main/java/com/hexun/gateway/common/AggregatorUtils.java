@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.hexun.common.http.RequestPackage;
 import com.hexun.common.http.ResponsePackage;
 import com.hexun.common.utils.JsonUtils;
+import com.hexun.gateway.disconf.CommonDisconf;
 import com.hexun.gateway.pojo.ResourceInfo;
 import com.hexun.hwcommon.model.CommonLoginInfo;
 
@@ -98,7 +99,7 @@ public class AggregatorUtils {
 	public static String getUserId(String cookie) {
 		Map<String, String> map = new HashMap<>(1);
 		map.put("cookie", cookie);
-		ResponsePackage response = RequestPackage.get(Constant.LOGINURL).setHeaders(map).getResponse();
+		ResponsePackage response = RequestPackage.get(CommonDisconf.getLoginUrl()).setHeaders(map).getResponse();
 		if (null == response || !response.isSuccess()) {
 			return null;
 		}

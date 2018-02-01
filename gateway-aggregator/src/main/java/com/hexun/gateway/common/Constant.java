@@ -28,8 +28,4 @@ public final class Constant extends BaseConstant {
 	 */
 	public static final String CACHEKEY = "aggregator:%s:%s:%s";
 	
-	/**
-	 * 登录地址
-	 */
-	public static final String LOGINURL = "http://reg.intcoop.hexun.com/wapreg/checklogin.aspx?format=json";
 }

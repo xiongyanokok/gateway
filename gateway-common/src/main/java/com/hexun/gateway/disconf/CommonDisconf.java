@@ -30,6 +30,11 @@ public class CommonDisconf {
 	 * 网关配置数据地址
 	 */
 	private static String gatewayUrl;
+	
+	/**
+	 * 用户登录地址
+	 */
+	private static String loginUrl;
 
 	
 	@DisconfFileItem(name = "request.client")
@@ -57,6 +62,15 @@ public class CommonDisconf {
 
 	public static void setGatewayUrl(String gatewayUrl) {
 		CommonDisconf.gatewayUrl = gatewayUrl;
+	}
+
+	@DisconfFileItem(name = "login.url")
+	public static String getLoginUrl() {
+		return loginUrl;
+	}
+
+	public static void setLoginUrl(String loginUrl) {
+		CommonDisconf.loginUrl = loginUrl;
 	}
 	
 }
