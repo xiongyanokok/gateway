@@ -18,8 +18,13 @@ import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
 import org.beetl.core.resource.StringTemplateResourceLoader;
 import org.redisson.api.RBucket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.dianping.cat.Cat;
+import com.dianping.cat.message.Message;
+import com.dianping.cat.message.Transaction;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.hexun.cache.IRedisClient;
 import com.hexun.common.utils.JsonUtils;
@@ -36,6 +41,11 @@ import com.hexun.gateway.pojo.ResourceInfo;
  */
 public abstract class AbstractAggregatorRequest<T> implements AggregatorRequest<T> {
 
+	/**
+	 * logger
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(AbstractAggregatorRequest.class);
+	
 	/**
 	 * IRedisClient
 	 */
@@ -83,7 +93,7 @@ public abstract class AbstractAggregatorRequest<T> implements AggregatorRequest<
 			ResourceInfo resource = entry.getKey();
 			T t = entry.getValue();
 			// 获取执行结果
-			String value = futureResult(resource, t);
+			String value = getResult(resource, t);
 			resultMap.put(resource.getResourceName(), value);
 		}
 		
@@ -158,6 +168,7 @@ public abstract class AbstractAggregatorRequest<T> implements AggregatorRequest<
      *
      * @param iter
      * @param value
+     * @return
      */
     public String serialWorker(Iterator<ResourceInfo> iter, String value) {
         if (iter.hasNext()) {
@@ -180,7 +191,7 @@ public abstract class AbstractAggregatorRequest<T> implements AggregatorRequest<
             T t = execute(resource);
             
             // 获取执行结果
-			String result = futureResult(resource, t);
+			String result = getResult(resource, t);
 			
             // 递归调用
             return serialWorker(iter, result);
@@ -189,15 +200,15 @@ public abstract class AbstractAggregatorRequest<T> implements AggregatorRequest<
     }
 	
 	/**
-	 * 获取异步结果
+	 * 获取执行结果
 	 * 
 	 * @param resource
 	 * @param t
 	 * @return
 	 */
-	public String futureResult(ResourceInfo resource, T t) {
-		// 获取结果
-		String content = result(resource, t);
+	private String getResult(ResourceInfo resource, T t) {
+		// 获取响应结果
+		String content = getResponse(resource, t);
 		if (StringUtils.isEmpty(content)) {
 			return resource.getDefaultValue();
 		}
@@ -209,6 +220,31 @@ public abstract class AbstractAggregatorRequest<T> implements AggregatorRequest<
 		setCache(resource, content);
 		
 		return StringUtils.isEmpty(content) ? resource.getDefaultValue() : content;
+	}
+	
+	/**
+	 * 获取响应结果
+	 * 
+	 * @param resource
+	 * @param t
+	 * @return
+	 */
+	private String getResponse(ResourceInfo resource, T t) {
+		Transaction transaction = Cat.newTransaction(resource.getName(), resource.getResourceUrl());
+		try {
+            String value = result(resource, t);
+            // 成功
+            transaction.setStatus(Message.SUCCESS);
+            return value;
+        } catch (Exception e) {
+            // 失败
+            transaction.setStatus(e);
+            logger.error("执行URL【{}】失败：", resource.getResourceUrl(), e);
+            return null;
+        } finally {
+        	// 完成
+        	transaction.complete();
+		}
 	}
 	
 	/**

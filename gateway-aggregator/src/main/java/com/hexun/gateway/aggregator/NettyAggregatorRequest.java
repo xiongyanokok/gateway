@@ -2,8 +2,6 @@ package com.hexun.gateway.aggregator;
 
 import java.time.Duration;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.hexun.gateway.pojo.ResourceInfo;
@@ -21,11 +19,6 @@ import reactor.ipc.netty.http.client.HttpClientResponse;
 @Component("nettyAggregatorRequest")
 public class NettyAggregatorRequest extends AbstractAggregatorRequest<Mono<HttpClientResponse>> {
 
-	/**
-	 * logger
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(NettyAggregatorRequest.class);
-	
 	/**
 	 * 执行get请求
 	 * 
@@ -62,15 +55,11 @@ public class NettyAggregatorRequest extends AbstractAggregatorRequest<Mono<HttpC
 	 * @param resource
 	 * @param mono
 	 * @return
+	 * @throws Exception
 	 */
 	@Override
-	public String result(ResourceInfo resource, Mono<HttpClientResponse> mono) {
-		try {
-			return mono.flatMapMany(s -> s.receive().asString()).reduce(String::concat).block(Duration.ofSeconds(resource.getTimeOut()));
-		} catch (Exception e) {
-			logger.error("异步执行URL【{}】失败：", resource.getResourceUrl(), e);
-			return null;
-		}
+	public String result(ResourceInfo resource, Mono<HttpClientResponse> mono) throws Exception {
+		return mono.flatMapMany(s -> s.receive().asString()).reduce(String::concat).block(Duration.ofSeconds(resource.getTimeOut()));
 	}
 	
 }

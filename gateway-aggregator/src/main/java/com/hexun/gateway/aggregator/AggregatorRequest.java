@@ -50,7 +50,8 @@ public interface AggregatorRequest<T> {
 	 * @param resource
 	 * @param t
 	 * @return
+	 * @throws Exception
 	 */
-	String result(ResourceInfo resource, T t);
+	String result(ResourceInfo resource, T t) throws Exception;
 	
 }

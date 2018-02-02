@@ -6,8 +6,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.collections4.MapUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
@@ -25,11 +23,6 @@ import com.hexun.gateway.pojo.ResourceInfo;
  */
 @Component("httpClientAggregatorRequest")
 public class HttpClientAggregatorRequest extends AbstractAggregatorRequest<Future<String>> {
-	
-	/**
-	 * logger
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(HttpClientAggregatorRequest.class);
 	
 	@Autowired
 	private ThreadPoolTaskExecutor taskExecutor;
@@ -97,15 +90,11 @@ public class HttpClientAggregatorRequest extends AbstractAggregatorRequest<Futur
 	 * @param resource
 	 * @param future
 	 * @return
+	 * @throws Exception
 	 */
 	@Override
-	public String result(ResourceInfo resource, Future<String> future) {
-		try {
-            return future.get(resource.getTimeOut(), TimeUnit.SECONDS);
-        } catch (Exception e) {
-            logger.error("异步执行URL【{}】失败：", resource.getResourceUrl(), e);
-            return null;
-        }
+	public String result(ResourceInfo resource, Future<String> future) throws Exception {
+		return future.get(resource.getTimeOut(), TimeUnit.SECONDS);
 	}
 	
 }

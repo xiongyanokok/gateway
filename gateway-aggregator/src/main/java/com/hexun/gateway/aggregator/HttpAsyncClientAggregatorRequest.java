@@ -21,8 +21,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.impl.nio.client.HttpAsyncClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
 
@@ -37,11 +35,6 @@ import com.hexun.gateway.pojo.ResourceInfo;
  */
 @Component("httpAsyncClientAggregatorRequest")
 public class HttpAsyncClientAggregatorRequest extends AbstractAggregatorRequest<Future<HttpResponse>> {
-	
-	/**
-	 * logger
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(HttpAsyncClientAggregatorRequest.class);
 	
 	/**
 	 * HttpAsyncClients
@@ -116,19 +109,15 @@ public class HttpAsyncClientAggregatorRequest extends AbstractAggregatorRequest<
 	 * @param resource
 	 * @param future
 	 * @return
+	 * @throws Exception
 	 */
 	@Override
-	public String result(ResourceInfo resource, Future<HttpResponse> future) {
-		try {
-			HttpResponse response = future.get(resource.getTimeOut(), TimeUnit.SECONDS);
-			if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode()) {
-				return StreamUtils.copyToString(response.getEntity().getContent(), Charset.forName(Constant.CHARSETNAME));
-			}
-			return null;
-        } catch (Exception e) {
-            logger.error("异步执行URL【{}】失败：", resource.getResourceUrl(), e);
-            return null;
-        }
+	public String result(ResourceInfo resource, Future<HttpResponse> future) throws Exception {
+		HttpResponse response = future.get(resource.getTimeOut(), TimeUnit.SECONDS);
+		if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode()) {
+			return StreamUtils.copyToString(response.getEntity().getContent(), Charset.forName(Constant.CHARSETNAME));
+		}
+		return null;
 	}
 	
 }
