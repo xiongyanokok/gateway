@@ -9,6 +9,7 @@ spring:
       charset: UTF-8
       enabled: true
       
+#端口号  --server.port=8080
 server:
   port: 8000
   tomcat:
@@ -23,7 +24,7 @@ zookeeper:
   namespace: gateway/api
 
 
-#多环境配置 -Dspring.profiles.active=xxx
+#多环境配置 --spring.profiles.active=xxx
 ---
 spring:
   profiles: test

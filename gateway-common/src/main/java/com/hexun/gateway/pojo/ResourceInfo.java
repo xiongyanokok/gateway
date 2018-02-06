@@ -33,6 +33,11 @@ public class ResourceInfo implements Comparable<ResourceInfo>, Serializable {
      * 资源名称
      */
     private String resourceName;
+    
+    /**
+     * 原始url
+     */
+    private String originalUrl;
 
     /**
      * 资源url

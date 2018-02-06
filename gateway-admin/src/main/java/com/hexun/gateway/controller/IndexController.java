@@ -233,6 +233,7 @@ public class IndexController extends BaseController {
 					resourceInfo.setName(aggregator.getName());
 					resourceInfo.setResourceIndex(resource.getResourceIndex());
 					resourceInfo.setResourceName(resource.getResourceName());
+					resourceInfo.setOriginalUrl(resource.getResourceUrl());
 					resourceInfo.setResourceUrl(resource.getResourceUrl());
 					resourceInfo.setResourceMethod(resource.getResourceMethod());
 					resourceInfo.setIsLogin(resource.getIsLogin());

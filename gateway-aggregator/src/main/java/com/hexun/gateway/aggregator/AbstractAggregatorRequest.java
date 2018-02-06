@@ -226,7 +226,7 @@ public abstract class AbstractAggregatorRequest<T> implements AggregatorRequest<
 	 * @return
 	 */
 	private String getResponse(ResourceInfo resource, T t) {
-		Transaction transaction = Cat.newTransaction(resource.getName(), resource.getResourceUrl());
+		Transaction transaction = Cat.newTransaction(resource.getName(), resource.getOriginalUrl());
 		try {
             String value = result(resource, t);
             // 成功

@@ -5,11 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.springframework.cloud.netflix.zuul.filters.route.FallbackProvider;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.stereotype.Component;
 
 import com.hexun.gateway.pojo.Result;
 
@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author xiongyan
  * @date 2017年12月19日 上午9:52:29
  */
-@Configuration
+@Component
 @Slf4j
 public class ServiceConsumerFallbackProvider implements FallbackProvider {
 	
