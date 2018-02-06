@@ -4,8 +4,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +16,8 @@ import com.hexun.gateway.enums.TrueFalseStatusEnum;
 import com.hexun.gateway.model.ApiSign;
 import com.hexun.gateway.service.ApiSignService;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Controller
  * 
@@ -26,12 +26,8 @@ import com.hexun.gateway.service.ApiSignService;
  */
 @Controller
 @RequestMapping(value = "/admin/apisign", produces = { "application/json; charset=UTF-8" })
+@Slf4j
 public class ApiSignController extends BaseController {
-
-	/**
-	 * logger
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(ApiSignController.class);
 
     @Autowired
 	private ApiSignService apiSignService;
@@ -71,7 +67,7 @@ public class ApiSignController extends BaseController {
 	public String sign(Model model, Integer apiId) {
 		Assert.notNull(apiId, "apiId为空");
 		model.addAttribute("apiId", apiId);
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>(1);
 		map.put("apiId", apiId);
 		ApiSign apiSign = apiSignService.getApiSign(map);
 		if (null == apiSign) {
@@ -109,7 +105,7 @@ public class ApiSignController extends BaseController {
 		apiSign.setUpdateTime(new Date());
 		apiSign.setIsDelete(TrueFalseStatusEnum.FALSE.getValue());
 		apiSignService.save(apiSign);
-		logger.info("【{}】保存成功", apiSign);
+		log.info("【{}】保存成功", apiSign);
 		return buildSuccess("保存成功");
 	}
 	
@@ -144,7 +140,7 @@ public class ApiSignController extends BaseController {
 		apiSign.setUpdateUserId(getUserId());
 		apiSign.setUpdateTime(new Date());
 		apiSignService.update(apiSign);
-		logger.info("【{}】修改成功", apiSign);
+		log.info("【{}】修改成功", apiSign);
 		return buildSuccess("修改成功");
 	}
 	
@@ -161,7 +157,7 @@ public class ApiSignController extends BaseController {
 		ApiSign apiSign = apiSignService.getApiSignById(id);
 		Assert.notNull(apiSign, "数据不存在");
 		apiSignService.remove(apiSign);
-		logger.info("【{}】删除成功", apiSign);
+		log.info("【{}】删除成功", apiSign);
 		return buildSuccess("删除成功");
 	}
 	

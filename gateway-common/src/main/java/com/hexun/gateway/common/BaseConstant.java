@@ -28,4 +28,9 @@ public class BaseConstant {
 	 */
 	public static final String CALLBACK = "callback";
 	
+	/**
+	 * 删除标记
+	 */
+	public static final String ISDELETE = "isDelete";
+	
 }

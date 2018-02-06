@@ -1,6 +1,8 @@
 spring:
   application:
     name: gateway
+  profiles:
+    active: test
   http:
     encoding:
       force: true
@@ -20,6 +22,12 @@ logging:
 zookeeper:
   namespace: gateway/api
 
+
+#多环境配置 -Dspring.profiles.active=xxx
+---
+spring:
+  profiles: test
+  
 zuul:     
   host:
     max-per-route-connections: 1000
@@ -32,12 +40,48 @@ zuul:
     cdsq:
       path: /cdsq/**
       stripPrefix: true
-      url: http://test.apicaidao.hexun.com/
+      url: http://test.apicaidao.hexun.com
        
     lesson:
       path: /lesson/**
       stripPrefix: true
-      url: http://test.apilesson.hexun.com/
+      url: http://test.apilesson.hexun.com
+
+  #限流
+  ratelimit:
+    enabled: true
+    repository: REDIS
+    behind-proxy: true
+    default-policy:
+      limit: 10
+      refresh-interval: 60
+      type: 
+        - user
+        - origin
+        - url
+        
+---
+spring:
+  profiles: product
+  
+zuul:     
+  host:
+    max-per-route-connections: 1000
+    max-total-connections: 10000
+    connect-timeout-millis: 2000
+    socket-timeout-millis: 5000
+
+  #路由  
+  routes:
+    cdsq:
+      path: /cdsq/**
+      stripPrefix: true
+      url: http://apicaidao.hexun.com
+       
+    lesson:
+      path: /lesson/**
+      stripPrefix: true
+      url: http://apilesson.hexun.com
      
   #限流
   ratelimit:
@@ -53,8 +97,16 @@ zuul:
         - url
         
     policies:
+      cdsq:
+        limit: 100
+        refresh-interval: 60
+        type: 
+          - user
+          - origin
+          - url
+          
       lesson:
-        limit: 3
+        limit: 100
         refresh-interval: 60
         type: 
           - user

@@ -3,8 +3,6 @@ package com.hexun.gateway.controller;
 import java.util.Date;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +15,8 @@ import com.hexun.gateway.enums.TrueFalseStatusEnum;
 import com.hexun.gateway.model.ApiProject;
 import com.hexun.gateway.service.ApiProjectService;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Controller
  * 
@@ -25,12 +25,8 @@ import com.hexun.gateway.service.ApiProjectService;
  */
 @Controller
 @RequestMapping(value = "/admin/apiproject", produces = { "application/json; charset=UTF-8" })
+@Slf4j
 public class ApiProjectController extends BaseController {
-
-	/**
-	 * logger
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(ApiProjectController.class);
 
     @Autowired
 	private ApiProjectService apiProjectService;
@@ -86,7 +82,7 @@ public class ApiProjectController extends BaseController {
 		apiProject.setUpdateTime(new Date());
 		apiProject.setIsDelete(TrueFalseStatusEnum.FALSE.getValue());
 		apiProjectService.save(apiProject);
-		logger.info("【{}】保存成功", apiProject);
+		log.info("【{}】保存成功", apiProject);
 		return buildSuccess("保存成功");
 	}
 	
@@ -121,7 +117,7 @@ public class ApiProjectController extends BaseController {
 		apiProject.setUpdateUserId(getUserId());
 		apiProject.setUpdateTime(new Date());
 		apiProjectService.update(apiProject);
-		logger.info("【{}】修改成功", apiProject);
+		log.info("【{}】修改成功", apiProject);
 		return buildSuccess("修改成功");
 	}
 	
@@ -138,7 +134,7 @@ public class ApiProjectController extends BaseController {
 		ApiProject apiProject = apiProjectService.getApiProjectById(id);
 		Assert.notNull(apiProject, "数据不存在");
 		apiProjectService.remove(apiProject);
-		logger.info("【{}】删除成功", apiProject);
+		log.info("【{}】删除成功", apiProject);
 		return buildSuccess("删除成功");
 	}
 	

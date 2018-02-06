@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
+import org.springframework.stereotype.Component;
 
 import com.hexun.gateway.common.GatewayUtils;
 import com.hexun.gateway.pojo.Result;
@@ -12,12 +13,16 @@ import com.hexun.hwcommon.service.UserAuth;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 登录过滤器
  * 
  * @author xiongyan
  * @date 2017年12月18日 上午10:56:04
  */
+@Component
+@Slf4j
 public class LoginFilter extends ZuulFilter {
 	
 	/**
@@ -37,6 +42,7 @@ public class LoginFilter extends ZuulFilter {
 		if (commonLoginInfo == null || Boolean.FALSE.toString().equalsIgnoreCase(commonLoginInfo.getIslogin())) {
 			// 未登录
 			GatewayUtils.responseBody(Result.NOTLOGIN.toString());
+			log.info("用户未登录");
 			return null;
 		}
 		
@@ -46,6 +52,7 @@ public class LoginFilter extends ZuulFilter {
 		Set<Long> userIds = GatewayUtils.getGatewayInfo().getUserIds();
 		if (CollectionUtils.isNotEmpty(userIds) && userIds.contains(userId)) {
 			GatewayUtils.responseBody(Result.NOTLOGIN.toString());
+			log.info("用户ID【{}】已列入黑名单", userId);
 			return null;
 		}
 			

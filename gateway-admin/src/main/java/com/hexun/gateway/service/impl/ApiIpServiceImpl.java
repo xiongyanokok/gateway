@@ -1,6 +1,5 @@
 package com.hexun.gateway.service.impl;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.hexun.common.utils.ListPageUtil;
 import com.hexun.gateway.common.Assert;
+import com.hexun.gateway.common.utils.CommonUtils;
 import com.hexun.gateway.enums.ErrorCodeEnum;
 import com.hexun.gateway.enums.TrueFalseStatusEnum;
 import com.hexun.gateway.exception.GatewayException;
@@ -56,9 +56,8 @@ public class ApiIpServiceImpl implements ApiIpService {
     public ApiIp getApiIpById(Integer id) {
     	Assert.notNull(id, "id为空");
     	try {
-    		Map<String, Object> map = new HashMap<>();
+    		Map<String, Object> map = CommonUtils.defaultQueryMap();
     		map.put("id", id);
-    		map.put("isDelete", TrueFalseStatusEnum.FALSE.getValue());
 	    	return apiIpMapper.getApiIp(map);
 		} catch (Exception e) {
 			throw new GatewayException(ErrorCodeEnum.DB_SELECT_ERROR, "【" + id + "】查询失败", e);

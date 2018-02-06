@@ -3,6 +3,7 @@ package com.hexun.gateway.filter;
 import org.redisson.api.RBucket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
+import org.springframework.stereotype.Component;
 
 import com.hexun.cache.IRedisClient;
 import com.hexun.gateway.common.Constant;
@@ -16,6 +17,7 @@ import com.netflix.zuul.context.RequestContext;
  * @author xiongyan
  * @date 2017年12月18日 下午1:55:49
  */
+@Component
 public class CacheFilter extends ZuulFilter {
 	
 	@Autowired

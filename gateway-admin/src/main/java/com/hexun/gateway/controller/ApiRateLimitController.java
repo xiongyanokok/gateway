@@ -4,8 +4,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +16,8 @@ import com.hexun.gateway.enums.TrueFalseStatusEnum;
 import com.hexun.gateway.model.ApiRateLimit;
 import com.hexun.gateway.service.ApiRateLimitService;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Controller
  * 
@@ -26,12 +26,8 @@ import com.hexun.gateway.service.ApiRateLimitService;
  */
 @Controller
 @RequestMapping(value = "/admin/apiratelimit", produces = { "application/json; charset=UTF-8" })
+@Slf4j
 public class ApiRateLimitController extends BaseController {
-
-	/**
-	 * logger
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(ApiRateLimitController.class);
 
     @Autowired
 	private ApiRateLimitService apiRateLimitService;
@@ -71,7 +67,7 @@ public class ApiRateLimitController extends BaseController {
 	public String ratelimit(Model model, Integer apiId) {
 		Assert.notNull(apiId, "apiId为空");
 		model.addAttribute("apiId", apiId);
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>(1);
 		map.put("apiId", apiId);
 		ApiRateLimit apiRateLimit = apiRateLimitService.getApiRateLimit(map);
 		if (null == apiRateLimit) {
@@ -109,7 +105,7 @@ public class ApiRateLimitController extends BaseController {
 		apiRateLimit.setUpdateTime(new Date());
 		apiRateLimit.setIsDelete(TrueFalseStatusEnum.FALSE.getValue());
 		apiRateLimitService.save(apiRateLimit);
-		logger.info("【{}】保存成功", apiRateLimit);
+		log.info("【{}】保存成功", apiRateLimit);
 		return buildSuccess("保存成功");
 	}
 	
@@ -144,7 +140,7 @@ public class ApiRateLimitController extends BaseController {
 		apiRateLimit.setUpdateUserId(getUserId());
 		apiRateLimit.setUpdateTime(new Date());
 		apiRateLimitService.update(apiRateLimit);
-		logger.info("【{}】修改成功", apiRateLimit);
+		log.info("【{}】修改成功", apiRateLimit);
 		return buildSuccess("修改成功");
 	}
 	
@@ -161,7 +157,7 @@ public class ApiRateLimitController extends BaseController {
 		ApiRateLimit apiRateLimit = apiRateLimitService.getApiRateLimitById(id);
 		Assert.notNull(apiRateLimit, "数据不存在");
 		apiRateLimitService.remove(apiRateLimit);
-		logger.info("【{}】删除成功", apiRateLimit);
+		log.info("【{}】删除成功", apiRateLimit);
 		return buildSuccess("删除成功");
 	}
 	

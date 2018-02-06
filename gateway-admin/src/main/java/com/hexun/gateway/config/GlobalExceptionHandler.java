@@ -5,8 +5,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,6 +14,8 @@ import com.hexun.gateway.common.Constant;
 import com.hexun.gateway.common.utils.CommonUtils;
 import com.hexun.gateway.exception.GatewayException;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 全局异常处理
  * 
@@ -23,12 +23,8 @@ import com.hexun.gateway.exception.GatewayException;
  * @date 2017年3月28日 下午4:15:46
  */
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
-	
-	/**
-	 * logger
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 	
 	/**
 	 * GatewayException 全局异常
@@ -40,7 +36,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(GatewayException.class)
     @ResponseBody
     public Object exceptionHandler(GatewayException e, HttpServletRequest request) {
-		logger.error("GatewayException：", e);
+		log.error("GatewayException：", e);
 		if (CommonUtils.isAjax(request)) {
 			String message = e.getMessage();
 			int index = message.indexOf('】');
@@ -63,7 +59,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(RuntimeException.class)
     @ResponseBody
     public Object handleAllException(RuntimeException e, HttpServletRequest request) {
-		logger.error("RuntimeException：", e);
+		log.error("RuntimeException：", e);
 		if (CommonUtils.isAjax(request)) {
 			return errorJson("系统错误");
 		} else {

@@ -2,6 +2,8 @@ package com.hexun.gateway.common;
 
 import java.net.InetSocketAddress;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.dianping.cat.Cat;
 import com.dianping.cat.CatConstants;
 import com.dianping.cat.message.Message;
@@ -33,7 +35,7 @@ public class CatUtils {
 	private static void logRequestClientInfo(ChannelHandlerContext ctx, HttpRequest request) {
 		StringBuilder sb = new StringBuilder(1024);
 		String ip = request.headers().get("X-Forwarded-For");
-		if (ip == null) {
+		if (StringUtils.isNotEmpty(ip)) {
 			ip = getHostAddress(ctx);
 		}
 		sb.append("IPS=").append(ip);

@@ -3,8 +3,6 @@ package com.hexun.gateway.controller;
 import java.util.Date;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +15,8 @@ import com.hexun.gateway.enums.TrueFalseStatusEnum;
 import com.hexun.gateway.model.ApiUser;
 import com.hexun.gateway.service.ApiUserService;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Controller
  * 
@@ -25,12 +25,8 @@ import com.hexun.gateway.service.ApiUserService;
  */
 @Controller
 @RequestMapping(value = "/admin/apiuser", produces = { "application/json; charset=UTF-8" })
+@Slf4j
 public class ApiUserController extends BaseController {
-
-	/**
-	 * logger
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(ApiUserController.class);
 
     @Autowired
 	private ApiUserService apiUserService;
@@ -93,7 +89,7 @@ public class ApiUserController extends BaseController {
 		apiUser.setUpdateTime(new Date());
 		apiUser.setIsDelete(TrueFalseStatusEnum.FALSE.getValue());
 		apiUserService.save(apiUser);
-		logger.info("【{}】保存成功", apiUser);
+		log.info("【{}】保存成功", apiUser);
 		return buildSuccess("保存成功");
 	}
 	
@@ -128,7 +124,7 @@ public class ApiUserController extends BaseController {
 		apiUser.setUpdateUserId(getUserId());
 		apiUser.setUpdateTime(new Date());
 		apiUserService.update(apiUser);
-		logger.info("【{}】修改成功", apiUser);
+		log.info("【{}】修改成功", apiUser);
 		return buildSuccess("修改成功");
 	}
 	
@@ -145,7 +141,7 @@ public class ApiUserController extends BaseController {
 		ApiUser apiUser = apiUserService.getApiUserById(id);
 		Assert.notNull(apiUser, "数据不存在");
 		apiUserService.remove(apiUser);
-		logger.info("【{}】删除成功", apiUser);
+		log.info("【{}】删除成功", apiUser);
 		return buildSuccess("删除成功");
 	}
 	

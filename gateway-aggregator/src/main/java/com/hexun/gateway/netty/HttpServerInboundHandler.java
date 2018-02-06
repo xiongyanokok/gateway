@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +29,7 @@ import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.HttpRequest;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 服务端处理器
@@ -40,12 +39,8 @@ import io.netty.handler.codec.http.HttpRequest;
  */
 @Component
 @Sharable
+@Slf4j
 public class HttpServerInboundHandler extends SimpleChannelInboundHandler<HttpRequest> {
-
-	/**
-	 * logger
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(HttpServerInboundHandler.class);
 
 	/**
 	 * 聚合请求
@@ -122,7 +117,7 @@ public class HttpServerInboundHandler extends SimpleChannelInboundHandler<HttpRe
 			// 失败
 			t.setStatus(e);
 			result = Result.SYSTEMERROR.toString();
-			logger.error("【{}】聚合失败:", uri, e);
+			log.error("【{}】聚合失败:", uri, e);
 		} finally {
 			// 完成
 			t.complete();

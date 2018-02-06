@@ -3,8 +3,6 @@ package com.hexun.gateway.controller;
 import java.util.Date;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +17,8 @@ import com.hexun.gateway.model.Aggregator;
 import com.hexun.gateway.service.AggregatorService;
 import com.hexun.gateway.zookeeper.RegistryCenter;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Controller
  * 
@@ -27,12 +27,8 @@ import com.hexun.gateway.zookeeper.RegistryCenter;
  */
 @Controller
 @RequestMapping(value = "/admin/aggregator", produces = { "application/json; charset=UTF-8" })
+@Slf4j
 public class AggregatorController extends BaseController {
-
-	/**
-	 * logger
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(AggregatorController.class);
 
     @Autowired
 	private AggregatorService aggregatorService;
@@ -94,7 +90,7 @@ public class AggregatorController extends BaseController {
 		aggregator.setUpdateTime(new Date());
 		aggregator.setIsDelete(TrueFalseStatusEnum.FALSE.getValue());
 		aggregatorService.save(aggregator);
-		logger.info("【{}】保存成功", aggregator);
+		log.info("【{}】保存成功", aggregator);
 		return buildSuccess("保存成功");
 	}
 	
@@ -129,7 +125,7 @@ public class AggregatorController extends BaseController {
 		aggregator.setUpdateUserId(getUserId());
 		aggregator.setUpdateTime(new Date());
 		aggregatorService.update(aggregator);
-		logger.info("【{}】修改成功", aggregator);
+		log.info("【{}】修改成功", aggregator);
 		return buildSuccess("修改成功");
 	}
 	
@@ -146,7 +142,7 @@ public class AggregatorController extends BaseController {
 		Aggregator aggregator = aggregatorService.getAggregatorById(id);
 		Assert.notNull(aggregator, "数据不存在");
 		aggregatorService.remove(aggregator);
-		logger.info("【{}】删除成功", aggregator);
+		log.info("【{}】删除成功", aggregator);
 		return buildSuccess("删除成功");
 	}
 	

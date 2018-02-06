@@ -3,8 +3,6 @@ package com.hexun.gateway.controller;
 import java.util.Date;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +17,8 @@ import com.hexun.gateway.model.AggregatorResource;
 import com.hexun.gateway.service.AggregatorResourceService;
 import com.hexun.gateway.service.AggregatorService;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Controller
  * 
@@ -27,12 +27,8 @@ import com.hexun.gateway.service.AggregatorService;
  */
 @Controller
 @RequestMapping(value = "/admin/aggregatorresource", produces = { "application/json; charset=UTF-8" })
+@Slf4j
 public class AggregatorResourceController extends BaseController {
-
-	/**
-	 * logger
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(AggregatorResourceController.class);
 
     @Autowired
 	private AggregatorResourceService aggregatorResourceService;
@@ -102,7 +98,7 @@ public class AggregatorResourceController extends BaseController {
 		aggregatorResource.setUpdateTime(new Date());
 		aggregatorResource.setIsDelete(TrueFalseStatusEnum.FALSE.getValue());
 		aggregatorResourceService.save(aggregatorResource);
-		logger.info("【{}】保存成功", aggregatorResource);
+		log.info("【{}】保存成功", aggregatorResource);
 		return buildSuccess("保存成功");
 	}
 	
@@ -141,7 +137,7 @@ public class AggregatorResourceController extends BaseController {
 		aggregatorResource.setUpdateUserId(getUserId());
 		aggregatorResource.setUpdateTime(new Date());
 		aggregatorResourceService.update(aggregatorResource);
-		logger.info("【{}】修改成功", aggregatorResource);
+		log.info("【{}】修改成功", aggregatorResource);
 		return buildSuccess("修改成功");
 	}
 	
@@ -158,7 +154,7 @@ public class AggregatorResourceController extends BaseController {
 		AggregatorResource aggregatorResource = aggregatorResourceService.getAggregatorResourceById(id);
 		Assert.notNull(aggregatorResource, "数据不存在");
 		aggregatorResourceService.remove(aggregatorResource);
-		logger.info("【{}】删除成功", aggregatorResource);
+		log.info("【{}】删除成功", aggregatorResource);
 		return buildSuccess("删除成功");
 	}
 	

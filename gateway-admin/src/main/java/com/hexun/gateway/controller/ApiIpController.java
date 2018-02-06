@@ -3,8 +3,6 @@ package com.hexun.gateway.controller;
 import java.util.Date;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +15,8 @@ import com.hexun.gateway.enums.TrueFalseStatusEnum;
 import com.hexun.gateway.model.ApiIp;
 import com.hexun.gateway.service.ApiIpService;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Controller
  * 
@@ -25,12 +25,8 @@ import com.hexun.gateway.service.ApiIpService;
  */
 @Controller
 @RequestMapping(value = "/admin/apiip", produces = { "application/json; charset=UTF-8" })
+@Slf4j
 public class ApiIpController extends BaseController {
-
-	/**
-	 * logger
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(ApiIpController.class);
 
     @Autowired
 	private ApiIpService apiIpService;
@@ -96,7 +92,7 @@ public class ApiIpController extends BaseController {
 		apiIp.setUpdateTime(new Date());
 		apiIp.setIsDelete(TrueFalseStatusEnum.FALSE.getValue());
 		apiIpService.save(apiIp);
-		logger.info("【{}】保存成功", apiIp);
+		log.info("【{}】保存成功", apiIp);
 		return buildSuccess("保存成功");
 	}
 	
@@ -131,7 +127,7 @@ public class ApiIpController extends BaseController {
 		apiIp.setUpdateUserId(getUserId());
 		apiIp.setUpdateTime(new Date());
 		apiIpService.update(apiIp);
-		logger.info("【{}】修改成功", apiIp);
+		log.info("【{}】修改成功", apiIp);
 		return buildSuccess("修改成功");
 	}
 	
@@ -148,7 +144,7 @@ public class ApiIpController extends BaseController {
 		ApiIp apiIp = apiIpService.getApiIpById(id);
 		Assert.notNull(apiIp, "数据不存在");
 		apiIpService.remove(apiIp);
-		logger.info("【{}】删除成功", apiIp);
+		log.info("【{}】删除成功", apiIp);
 		return buildSuccess("删除成功");
 	}
 	

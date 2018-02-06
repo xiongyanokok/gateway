@@ -1,18 +1,21 @@
 package com.hexun.gateway.filter;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
 
 import org.redisson.api.RBucket;
+import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
+import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StreamUtils;
 
+import com.dianping.cat.message.Transaction;
 import com.hexun.cache.IRedisClient;
 import com.hexun.gateway.common.Constant;
 import com.hexun.gateway.common.GatewayUtils;
 import com.hexun.gateway.pojo.CacheInfo;
-import com.hexun.gateway.pojo.GatewayInfo;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 
@@ -22,6 +25,7 @@ import com.netflix.zuul.context.RequestContext;
  * @author xiongyan
  * @date 2017年12月18日 下午1:55:49
  */
+@Component
 public class SuccessFilter extends ZuulFilter {
 	
 	@Autowired
@@ -35,10 +39,6 @@ public class SuccessFilter extends ZuulFilter {
 		if (GatewayUtils.isEnd()) {
 			return false;
 		}
-		GatewayInfo gatewayInfo = GatewayUtils.getGatewayInfo();
-		if (!gatewayInfo.getCache() || null == gatewayInfo.getCacheInfo()) {
-			return false;
-		}
 		RequestContext ctx = RequestContext.getCurrentContext();
 		return null == ctx.getThrowable() && (null != ctx.getResponseDataStream() || null != ctx.getResponseBody());
 	}
@@ -49,22 +49,38 @@ public class SuccessFilter extends ZuulFilter {
 	@Override
 	public Object run() {
 		try {
-			RequestContext ctx = RequestContext.getCurrentContext();
-			// 获取流中的内容
-			String body = StreamUtils.copyToString(ctx.getResponseDataStream(), Charset.forName(Constant.CHARSETNAME));
-			// 字符串放入responseBody
-			ctx.setResponseBody(body);
+			// 释放锁
+			if (GatewayUtils.isLock()) {
+				RLock lock = GatewayUtils.getLock();
+				if (null != lock) {
+					lock.unlock();
+				}
+			}
 			
+			// 分布式缓存
+			if (GatewayUtils.isCache()) {
+				RequestContext ctx = RequestContext.getCurrentContext();
+				// 获取流中的内容
+				String body = StreamUtils.copyToString(ctx.getResponseDataStream(), Charset.forName(Constant.CHARSETNAME));
+				// 字符串放入responseBody
+				ctx.setResponseBody(body);
+				
+				// 生成唯一key
+				String key = String.format(Constant.CACHEKEY, GatewayUtils.getProjectName(), ctx.getRequest().getRequestURI().replace(":", ""));
+				RBucket<String> rBucket = redisClient.getBucket(key);
+				CacheInfo cacheInfo = GatewayUtils.getGatewayInfo().getCacheInfo();
+				rBucket.set(body, cacheInfo.getTime(), cacheInfo.getTimeUnit());
+			}
 			
-			// 缓存信息
-			CacheInfo cacheInfo = GatewayUtils.getGatewayInfo().getCacheInfo();
-			// 生成唯一key
-			String key = String.format(Constant.CACHEKEY, GatewayUtils.getProjectName(), ctx.getRequest().getRequestURI().replace(":", ""));
-			RBucket<String> rBucket = redisClient.getBucket(key);
-			rBucket.set(body, cacheInfo.getTime(), cacheInfo.getTimeUnit());
-		} catch (Exception e) {
+			// 获取CAT Transaction
+			Transaction transaction = GatewayUtils.getTransaction();
+			if (null != transaction) {
+				transaction.setStatus(Transaction.SUCCESS);
+				transaction.complete();
+			}
+		} catch (IOException e) {
 			ReflectionUtils.rethrowRuntimeException(e);
-		} 
+		}
 		return null;
 	}
 

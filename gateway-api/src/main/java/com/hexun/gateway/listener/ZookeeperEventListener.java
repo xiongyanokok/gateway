@@ -7,8 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.hexun.common.http.RequestPackage;
@@ -20,18 +18,16 @@ import com.hexun.gateway.enums.ErrorCodeEnum;
 import com.hexun.gateway.exception.GatewayException;
 import com.hexun.gateway.pojo.GatewayInfo;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * zookeeper 事件监听
  * 
  * @author xiongyan
  * @date 2017年4月21日 上午11:15:53
  */
+@Slf4j
 public class ZookeeperEventListener implements TreeCacheListener {
-	
-	/**
-	 * logger
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(ZookeeperEventListener	.class);
 	
 	/**
 	 * 重试次数
@@ -53,11 +49,11 @@ public class ZookeeperEventListener implements TreeCacheListener {
 	public void childEvent(CuratorFramework client, TreeCacheEvent event) throws Exception {
 		if (TreeCacheEvent.Type.NODE_UPDATED.equals(event.getType())) {
 			String data = new String(event.getData().getData());
-			logger.info("网关配置信息发生变化，时间【{}】", data);
+			log.info("网关配置信息发生变化，时间【{}】", data);
 			
 			// 加载网关配置信息
 			reloadGatewayInfo();
-			logger.info("网关配置信息重新加载成功");
+			log.info("网关配置信息重新加载成功");
 		}
 	}
 	
@@ -68,13 +64,13 @@ public class ZookeeperEventListener implements TreeCacheListener {
 		// 获取网关配置信息
 		String result = getGatewayInfo();
 		if (StringUtils.isEmpty(result)) {
-			logger.error("获取网关配置信息为空");
+			log.error("获取网关配置信息为空");
 			return;
 		}
 		// 序列化
 		List<GatewayInfo> gatewayInfos = JsonUtils.string2Obj(result, new TypeReference<List<GatewayInfo>>() { });
 		if (CollectionUtils.isEmpty(gatewayInfos)) {
-			logger.error("网关配置信息【{}】序列化失败", result);
+			log.error("网关配置信息【{}】序列化失败", result);
 			return;
 		}
 		// 放入内存
@@ -99,7 +95,7 @@ public class ZookeeperEventListener implements TreeCacheListener {
 				return response.getContent();
 			}
         }
-        logger.error("重试【{}】次依然失败", retryTimes);
+        log.error("重试【{}】次依然失败", retryTimes);
         throw new GatewayException(ErrorCodeEnum.RETRY_TIMES, "重试【"+retryTimes+"】次");
     }
 	

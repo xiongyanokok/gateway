@@ -4,8 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cloud.netflix.zuul.filters.route.FallbackProvider;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +13,8 @@ import org.springframework.http.client.ClientHttpResponse;
 
 import com.hexun.gateway.pojo.Result;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 服务回退
  * 
@@ -22,13 +22,9 @@ import com.hexun.gateway.pojo.Result;
  * @date 2017年12月19日 上午9:52:29
  */
 @Configuration
+@Slf4j
 public class ServiceConsumerFallbackProvider implements FallbackProvider {
 	
-	/**
-	 * logger
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(ServiceConsumerFallbackProvider.class);
-
 	@Override
 	public String getRoute() {
 		return "*";
@@ -36,7 +32,7 @@ public class ServiceConsumerFallbackProvider implements FallbackProvider {
 
 	@Override
 	public ClientHttpResponse fallbackResponse() {
-		logger.error("xxxxxxx");
+		log.error("xxxxxxx");
 		return new ClientHttpResponse() {
 			
             @Override
@@ -75,7 +71,7 @@ public class ServiceConsumerFallbackProvider implements FallbackProvider {
 
 	@Override
 	public ClientHttpResponse fallbackResponse(Throwable cause) {
-		logger.error("yyyyyy：", cause);
+		log.error("yyyyyy：", cause);
 		return new ClientHttpResponse() {
 			
             @Override

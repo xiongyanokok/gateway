@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
+import org.springframework.stereotype.Component;
 
 import com.hexun.cache.IRedisClient;
 import com.hexun.common.security.Md5Utils;
@@ -19,6 +20,7 @@ import com.netflix.zuul.context.RequestContext;
  * @author xiongyan
  * @date 2017年12月18日 下午1:55:49
  */
+@Component
 public class LockFilter extends ZuulFilter {
 	
 	@Autowired

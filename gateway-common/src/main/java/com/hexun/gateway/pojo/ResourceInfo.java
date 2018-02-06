@@ -3,8 +3,7 @@ package com.hexun.gateway.pojo;
 import java.io.Serializable;
 import java.util.Map;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 /**
  * model 实体类
@@ -12,8 +11,7 @@ import lombok.Setter;
  * @author admin
  * @date 2017年05月13日 上午10:35:00
  */
-@Getter
-@Setter
+@Data
 public class ResourceInfo implements Comparable<ResourceInfo>, Serializable {
 
     /**

@@ -18,13 +18,13 @@ import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.data.ACL;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * zookeeper 注册中心.
@@ -32,12 +32,8 @@ import com.google.common.base.Strings;
  * @author xiongyan
  * @date 2017年4月17日 下午5:01:04
  */
+@Slf4j
 public class ZookeeperRegistryCenter extends ZookeeperConfiguration implements RegistryCenter, InitializingBean, DisposableBean {
-	
-	/**
-	 * logger
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(ZookeeperRegistryCenter.class);
 	
 	/**
 	 * TreeCache
@@ -66,7 +62,7 @@ public class ZookeeperRegistryCenter extends ZookeeperConfiguration implements R
      */
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		logger.debug("monitor: zookeeper registry center init, server lists is: {}.", this.getServers());
+		log.debug("monitor: zookeeper registry center init, server lists is: {}.", this.getServers());
 		Builder builder = CuratorFrameworkFactory.builder()
                 .connectString(this.getServers())
                 .retryPolicy(new ExponentialBackoffRetry(this.getBaseSleepTimeMilliseconds(), this.getMaxRetries(), this.getMaxSleepTimeMilliseconds()))

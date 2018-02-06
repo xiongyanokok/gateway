@@ -9,6 +9,7 @@ import org.springframework.cloud.netflix.zuul.filters.RouteLocator;
 import org.springframework.http.MediaType;
 import org.springframework.web.util.UrlPathHelper;
 
+import com.dianping.cat.message.Transaction;
 import com.hexun.gateway.config.SpringContextUtils;
 import com.hexun.gateway.enums.TrueFalseStatusEnum;
 import com.hexun.gateway.pojo.GatewayInfo;
@@ -51,13 +52,7 @@ public class GatewayUtils {
 	 * @return
 	 */
 	public static Route getRoute() {
-		RequestContext ctx = RequestContext.getCurrentContext();
-		Route route = (Route) ctx.get(Constant.ROUTE); 
-		if (null == route) {
-			route = routeLocator.getMatchingRoute(URLPATHHELPER.getPathWithinApplication(ctx.getRequest()));
-			ctx.set(Constant.ROUTE, route);
-		}
-		return route;
+		return routeLocator.getMatchingRoute(URLPATHHELPER.getPathWithinApplication(RequestContext.getCurrentContext().getRequest()));
 	}
 
 	/**
@@ -108,6 +103,24 @@ public class GatewayUtils {
 	 */
 	public static GatewayInfo getGatewayInfo() {
 		return (GatewayInfo) RequestContext.getCurrentContext().get("gatewayInfo");
+	}
+	
+	/**
+	 * Transaction放入threadLocal
+	 * 
+	 * @param transaction
+	 */
+	public static void setTransaction(Transaction transaction) {
+		RequestContext.getCurrentContext().set("transaction", transaction);
+	}
+	
+	/**
+	 * 从threadLocal中获取Transaction
+	 * 
+	 * @return
+	 */
+	public static Transaction getTransaction() {
+		return (Transaction) RequestContext.getCurrentContext().get("transaction");
 	}
 	
 	/**
@@ -170,6 +183,15 @@ public class GatewayUtils {
 		}
 		GatewayInfo gatewayInfo = getGatewayInfo();
 		return null != gatewayInfo && gatewayInfo.getLogin();
+	}
+	
+	/**
+	 * 是否XSS
+	 * 
+	 * @return
+	 */
+	public static boolean isXss() {
+		return !isEnd();
 	}
 	
 	/**

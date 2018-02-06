@@ -18,8 +18,6 @@ import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
 import org.beetl.core.resource.StringTemplateResourceLoader;
 import org.redisson.api.RBucket;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.dianping.cat.Cat;
@@ -33,19 +31,17 @@ import com.hexun.gateway.common.Constant;
 import com.hexun.gateway.enums.MethodEnum;
 import com.hexun.gateway.pojo.ResourceInfo;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 聚合请求抽象类
  * 
  * @author xiongyan
  * @date 2018年1月15日 下午1:55:24
  */
+@Slf4j
 public abstract class AbstractAggregatorRequest<T> implements AggregatorRequest<T> {
 
-	/**
-	 * logger
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(AbstractAggregatorRequest.class);
-	
 	/**
 	 * IRedisClient
 	 */
@@ -239,7 +235,7 @@ public abstract class AbstractAggregatorRequest<T> implements AggregatorRequest<
         } catch (Exception e) {
             // 失败
             transaction.setStatus(e);
-            logger.error("执行URL【{}】失败：", resource.getResourceUrl(), e);
+            log.error("执行URL【{}】失败：", resource.getResourceUrl(), e);
             return null;
         } finally {
         	// 完成

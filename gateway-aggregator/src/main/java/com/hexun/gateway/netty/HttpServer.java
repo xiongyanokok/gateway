@@ -3,8 +3,6 @@ package com.hexun.gateway.netty;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -22,6 +20,7 @@ import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.util.concurrent.DefaultThreadFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * netty server
@@ -30,13 +29,9 @@ import io.netty.util.concurrent.DefaultThreadFactory;
  * @date 2018年1月15日 下午6:04:10
  */
 @Component
+@Slf4j
 public class HttpServer {
 	
-	/**
-	 * logger
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
-
 	/**
 	 * 服务端处理器
 	 */
@@ -96,7 +91,7 @@ public class HttpServer {
 			}
 		});
 		channel = b.bind(port).sync().channel();
-		logger.info("netty server start success");
+		log.info("netty server start success");
 	}
 
 	/**

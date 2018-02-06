@@ -4,8 +4,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +16,8 @@ import com.hexun.gateway.enums.TrueFalseStatusEnum;
 import com.hexun.gateway.model.ApiCache;
 import com.hexun.gateway.service.ApiCacheService;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Controller
  * 
@@ -26,12 +26,8 @@ import com.hexun.gateway.service.ApiCacheService;
  */
 @Controller
 @RequestMapping(value = "/admin/apicache", produces = { "application/json; charset=UTF-8" })
+@Slf4j
 public class ApiCacheController extends BaseController {
-
-	/**
-	 * logger
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(ApiCacheController.class);
 
     @Autowired
 	private ApiCacheService apiCacheService;
@@ -71,7 +67,7 @@ public class ApiCacheController extends BaseController {
 	public String cache(Model model, Integer apiId) {
 		Assert.notNull(apiId, "apiId为空");
 		model.addAttribute("apiId", apiId);
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>(1);
 		map.put("apiId", apiId);
 		ApiCache apiCache = apiCacheService.getApiCache(map);
 		if (null == apiCache) {
@@ -109,7 +105,7 @@ public class ApiCacheController extends BaseController {
 		apiCache.setUpdateTime(new Date());
 		apiCache.setIsDelete(TrueFalseStatusEnum.FALSE.getValue());
 		apiCacheService.save(apiCache);
-		logger.info("【{}】保存成功", apiCache);
+		log.info("【{}】保存成功", apiCache);
 		return buildSuccess("保存成功");
 	}
 	
@@ -144,7 +140,7 @@ public class ApiCacheController extends BaseController {
 		apiCache.setUpdateUserId(getUserId());
 		apiCache.setUpdateTime(new Date());
 		apiCacheService.update(apiCache);
-		logger.info("【{}】修改成功", apiCache);
+		log.info("【{}】修改成功", apiCache);
 		return buildSuccess("修改成功");
 	}
 	
@@ -161,7 +157,7 @@ public class ApiCacheController extends BaseController {
 		ApiCache apiCache = apiCacheService.getApiCacheById(id);
 		Assert.notNull(apiCache, "数据不存在");
 		apiCacheService.remove(apiCache);
-		logger.info("【{}】删除成功", apiCache);
+		log.info("【{}】删除成功", apiCache);
 		return buildSuccess("删除成功");
 	}
 	

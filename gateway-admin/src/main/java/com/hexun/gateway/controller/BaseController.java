@@ -20,7 +20,6 @@ import com.hexun.gateway.common.Constant;
 import com.hexun.gateway.common.CustomDateEditor;
 import com.hexun.gateway.common.RequestContext;
 import com.hexun.gateway.common.utils.CommonUtils;
-import com.hexun.gateway.enums.TrueFalseStatusEnum;
 
 /**
  * controller的基类
@@ -55,7 +54,7 @@ public abstract class BaseController {
 	 * @return
 	 */
 	public Map<String, Object> buildData(Object obj) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>(2);
 		map.put(Constant.DEFAULT_CODE, "Y");
 		map.put(Constant.DEFAULT_DATA, obj);
 		return map;
@@ -68,7 +67,7 @@ public abstract class BaseController {
 	 * @return
 	 */
 	public Map<String, Object> buildSuccess(Object obj) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>(2);
 		map.put(Constant.DEFAULT_CODE, "Y");
 		map.put(Constant.DEFAULT_MESSAGE, obj);
 		return map;
@@ -81,7 +80,7 @@ public abstract class BaseController {
 	 * @return
 	 */
 	public Map<String, Object> buildFail(Object obj) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>(2);
 		map.put(Constant.DEFAULT_CODE, "N");
 		map.put(Constant.DEFAULT_MESSAGE, obj);
 		return map;
@@ -126,11 +125,9 @@ public abstract class BaseController {
 		// 设置分页参数
 		PageHelper.offsetPage(Integer.valueOf(offset), Integer.valueOf(limit));
 
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = CommonUtils.defaultQueryMap();
 		// 排序
 		map.put("orderBy", CommonUtils.humpToLine(request.getParameter("orderBy")));
-		// 未删除
-		map.put("isDelete", TrueFalseStatusEnum.FALSE.getValue());
 		// 查询数据库
 		List<T> list = callback.query(map);
 
@@ -138,7 +135,7 @@ public abstract class BaseController {
 		PageInfo<T> pageInfo = new PageInfo<>(list);
 
 		// jquery dataTable 分页参数
-		Map<String, Object> result = new HashMap<>();
+		Map<String, Object> result = new HashMap<>(4);
 		result.put(Constant.DEFAULT_CODE, "Y");
 		result.put(Constant.DEFAULT_DATA, pageInfo.getList());
 		result.put("recordsTotal", pageInfo.getTotal());

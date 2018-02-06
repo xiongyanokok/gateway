@@ -2,7 +2,6 @@ package com.hexun.gateway.controller;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -16,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.hexun.gateway.common.utils.CommonUtils;
 import com.hexun.gateway.enums.MethodEnum;
 import com.hexun.gateway.enums.TimeUnitEnum;
-import com.hexun.gateway.enums.TrueFalseStatusEnum;
 import com.hexun.gateway.model.Aggregator;
 import com.hexun.gateway.model.AggregatorResource;
 import com.hexun.gateway.model.ApiCache;
@@ -101,8 +100,7 @@ public class IndexController extends BaseController {
 	@RequestMapping(value = "/gateway", method = { RequestMethod.GET })
 	@ResponseBody
 	public List<GatewayInfo> gatewayInfo() {
-		Map<String, Object> map = new HashMap<>();
-		map.put("isDelete", TrueFalseStatusEnum.FALSE.getValue());
+		Map<String, Object> map = CommonUtils.defaultQueryMap();
 		List<ApiInfo> apiInfos = apiInfoService.listApiInfo(map);
 		if (CollectionUtils.isEmpty(apiInfos)) {
 			return Collections.emptyList();
@@ -211,8 +209,7 @@ public class IndexController extends BaseController {
 	@RequestMapping(value = "/aggregator", method = { RequestMethod.GET })
 	@ResponseBody
 	public List<AggregatorInfo> aggregatorInfo() {
-		Map<String, Object> map = new HashMap<>();
-		map.put("isDelete", TrueFalseStatusEnum.FALSE.getValue());
+		Map<String, Object> map = CommonUtils.defaultQueryMap();
 		List<Aggregator> aggregators = aggregatorService.listAggregator(map);
 		if (CollectionUtils.isEmpty(aggregators)) {
 			return Collections.emptyList();

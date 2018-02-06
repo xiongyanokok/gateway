@@ -3,6 +3,7 @@ package com.hexun.gateway.filter;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
+import org.springframework.stereotype.Component;
 
 import com.hexun.gateway.common.XssSpringHttpServletRequestWrapper;
 import com.hexun.gateway.common.GatewayUtils;
@@ -15,6 +16,7 @@ import com.netflix.zuul.context.RequestContext;
  * @author xiongyan
  * @date 2017年12月18日 下午2:02:45
  */
+@Component
 public class XssFilter extends ZuulFilter {
 	
 	/**
@@ -22,7 +24,7 @@ public class XssFilter extends ZuulFilter {
 	 */
 	@Override
 	public boolean shouldFilter() {
-		return !GatewayUtils.isEnd();
+		return GatewayUtils.isXss();
 	}
 
 	/**
