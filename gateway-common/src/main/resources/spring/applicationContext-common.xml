@@ -22,7 +22,7 @@
     </bean>
 
 	<!-- zookeeper registry center -->
-	<bean id="registryCenter" class="com.hexun.gateway.zookeeper.ZookeeperRegistryCenter">
+	<bean id="registryCenter" class="com.hexun.zookeeper.ZookeeperRegistryCenter" init-method="init" destroy-method="destroy">
 		<property name="servers" value="${zookeeper.servers}"/>
 		<property name="namespace" value="${zookeeper.namespace}"/>
 	</bean>

@@ -136,8 +136,16 @@
 				<artifactId>cat-plugins</artifactId>
 				<version>1.1.0</version>
 			</dependency>
+			
+			<!-- zookeeper -->
+			<dependency>
+			    <groupId>com.hexun</groupId>
+			    <artifactId>zookeeper</artifactId>
+			    <version>1.0.1</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	
 	<pluginRepositories>
 		<pluginRepository>
 			<id>nexus</id>
@@ -164,4 +172,5 @@
 			</snapshots>
 		</repository>
 	</repositories>
+	
 </project>

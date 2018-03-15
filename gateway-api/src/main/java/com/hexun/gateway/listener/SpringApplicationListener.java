@@ -6,7 +6,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
-import com.hexun.gateway.zookeeper.RegistryCenter;
+import com.hexun.zookeeper.RegistryCenter;
 
 /**
  * SpringApplicationListener

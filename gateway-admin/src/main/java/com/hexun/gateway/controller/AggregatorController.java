@@ -15,7 +15,7 @@ import com.hexun.gateway.common.Assert;
 import com.hexun.gateway.enums.TrueFalseStatusEnum;
 import com.hexun.gateway.model.Aggregator;
 import com.hexun.gateway.service.AggregatorService;
-import com.hexun.gateway.zookeeper.RegistryCenter;
+import com.hexun.zookeeper.RegistryCenter;
 
 import lombok.extern.slf4j.Slf4j;
 

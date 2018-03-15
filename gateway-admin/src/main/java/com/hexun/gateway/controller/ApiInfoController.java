@@ -20,7 +20,7 @@ import com.hexun.gateway.model.ApiInfo;
 import com.hexun.gateway.model.ApiProject;
 import com.hexun.gateway.service.ApiInfoService;
 import com.hexun.gateway.service.ApiProjectService;
-import com.hexun.gateway.zookeeper.RegistryCenter;
+import com.hexun.zookeeper.RegistryCenter;
 
 import lombok.extern.slf4j.Slf4j;
 

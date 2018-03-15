@@ -73,5 +73,11 @@
 			<artifactId>cat-plugins</artifactId>
 		</dependency>
 		
+		<!-- zookeeper -->
+		<dependency>
+		    <groupId>com.hexun</groupId>
+		    <artifactId>zookeeper</artifactId>
+		</dependency>
+		
 	</dependencies>
 </project>
