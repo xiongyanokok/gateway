@@ -1,3 +1,5 @@
+image: docker-registry.hexun.com/hexunzq/docker:1.8.3
+
 stages:
   - clean
   - package
