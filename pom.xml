@@ -40,9 +40,6 @@
 				<cat.aggregator>aggregator-test</cat.aggregator>
 				<cat.gateway>gateway-test</cat.gateway>
 			</properties>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
 		</profile>
 		<profile>
 			<id>test</id>
@@ -54,6 +51,9 @@
 				<cat.aggregator>aggregator-test</cat.aggregator>
 				<cat.gateway>gateway-test</cat.gateway>
 			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 		</profile>
 		<profile>
 			<id>product</id>
