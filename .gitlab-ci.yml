@@ -1,0 +1,84 @@
+stages:
+  - clean
+  - package
+  - deploy
+
+clean:
+  stage: clean
+  script:
+    - mkdir -p ../${CI_PROJECT_ID}${CI_BUILD_REF_NAME}
+    - rm -rf ../${CI_PROJECT_ID}${CI_BUILD_REF_NAME}/*
+  only:
+    - master
+    - test
+
+package-test:
+  stage: package
+  script:
+    - mvn package -Ptest -DskipTests=true -U
+    - find .|grep jar|xargs -i -t mv {} ../${CI_PROJECT_ID}${CI_BUILD_REF_NAME}/
+  only:
+    - test
+
+package-prd:
+  stage: package
+  script:
+    - mvn package -Pproduct -DskipTests=true -U
+    - find .|grep jar|xargs -i -t mv {} ../${CI_PROJECT_ID}${CI_BUILD_REF_NAME}/
+  only:
+    - master
+
+deploy-test-admin:
+  stage: deploy
+  only:
+    - test
+  when: manual
+  script:
+    - echo "deploy gateway-admin test"
+    - sh ./deploy/admin-test.sh
+
+deploy-test-aggregator:
+  stage: deploy
+  only:
+    - test
+  when: manual
+  script:
+    - echo "deploy gateway-aggregator test"
+    - sh ./deploy/aggregator-test.sh
+
+deploy-test-gateway:
+  stage: deploy
+  only:
+    - test
+  when: manual
+  script:
+    - echo "deploy gateway-api test"
+    - sh ./deploy/gateway-test.sh
+
+
+deploy-prd-admin:
+  stage: deploy
+  only:
+    - master
+  when: manual
+  script:
+    - echo "deploy gateway-admin prd"
+    - sh ./deploy/admin-prd.sh
+
+deploy-prd-aggregator:
+  stage: deploy
+  only:
+    - master
+  when: manual
+  script:
+    - echo "deploy gateway-aggregator prd"
+    - sh ./deploy/aggregator-prd.sh
+
+deploy-prd-gateway:
+  stage: deploy
+  only:
+    - master
+  when: manual
+  script:
+    - echo "deploy gateway-api prd"
+    - sh ./deploy/gateway-prd.sh
