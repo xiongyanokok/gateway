@@ -22,8 +22,6 @@ do
                docker-registry.hexun.com/hexunzq/java:8-fat-jar
 
     echo "COPYING ${data}"
-    ${DOCKER_CMD} exec ${CONTAINER_NAME} mkdir -p /data/appdatas/cat
-    ${DOCKER_CMD} exec ${CONTAINER_NAME} wget -O /data/appdatas/cat/client.xml http://disconf.intcoop.hexun.com/api/config/file?version=1_0_0_0\&app=common\&env=product\&key=client.xml\&type=0
     ${DOCKER_CMD} cp ${JAR_SOURCE} ${CONTAINER_NAME}:/app.jar
 done
 
