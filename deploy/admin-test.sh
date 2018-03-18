@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 CONTAINER_NAME=gateway-admin
-array=("10.4.22.140:8080")
+array=("10.4.22.140:2375")
 for data in ${array[@]}
 do
     DOCKER_CMD="docker --host=${data} "
